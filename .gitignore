@@ -91,6 +91,4 @@ Temporary Items
 
 bin/
 pkg/
-src/golang.org/
-src/github.com/
 maxwell.txt

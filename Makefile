@@ -1,6 +1,6 @@
 GOCC := env GOPATH=$(CURDIR) go
 
 all:
-	$(GOCC) install zalora.com/auditor/parse-binlog/
+	$(GOCC) install zalora/binlog-parser
 
 .PHONY: all

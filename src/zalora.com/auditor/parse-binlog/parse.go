@@ -12,8 +12,8 @@ import (
 )
 
 type TableMetadata struct {
-	table string
 	schema string
+	table string
 	fields map[int]string
 }
 

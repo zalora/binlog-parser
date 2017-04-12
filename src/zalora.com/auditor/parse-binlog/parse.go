@@ -3,11 +3,11 @@ package main
 import (
 	"encoding/json"
 	"time"
-	"github.com/siddontang/go-mysql/replication"
 	"os"
 	"fmt"
 	"strings"
 	"database/sql"
+	"github.com/siddontang/go-mysql/replication"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -74,25 +74,25 @@ type MessageHeader struct {
 	BinlogMessageTime string
 	MessageTime string
 	BinlogPosition uint32
-	TransactionId uint64
+	XId uint64
 }
 
-func NewMessageHeader(schema string, table string, binlogMessageTime time.Time, binlogPosition uint32, transactionId uint64) MessageHeader {
+func NewMessageHeader(schema string, table string, binlogMessageTime time.Time, binlogPosition uint32, xId uint64) MessageHeader {
 	return MessageHeader {
 		Schema: schema,
 		Table: table,
 		BinlogMessageTime: binlogMessageTime.Format(time.RFC3339),
 		MessageTime: time.Now().Format(time.RFC3339Nano),
 		BinlogPosition: binlogPosition,
-		TransactionId: transactionId,
+		XId: xId,
 	}
 }
 
 type MessageHeaderBuilder func(uint64) MessageHeader
 
 func NewMessageHeaderBuilder(schema string, table string, binlogMessageTime time.Time, binlogPosition uint32) MessageHeaderBuilder {
-	return func (transactionId uint64) MessageHeader {
-		return NewMessageHeader(schema, table, binlogMessageTime, binlogPosition, transactionId)
+	return func (xId uint64) MessageHeader {
+		return NewMessageHeader(schema, table, binlogMessageTime, binlogPosition, xId)
 	}
 }
 
@@ -112,12 +112,6 @@ func NewUpdateMessage(header MessageHeader, oldData map[string]interface{}, newD
 	return UpdateMessage{Header: header, Type: "UPDATE", OldData: oldData, NewData: newData}
 }
 
-func NewUpdateMessageAsGenericMessageBuilder(headerBuilderFunc MessageHeaderBuilder, oldData map[string]interface{}, newData map[string]interface{}) MessageBuilder {
-	return func (transactionId uint64) Message {
-		return Message(NewUpdateMessage(headerBuilderFunc(transactionId), oldData, newData))
-	}
-}
-
 type InsertMessage struct {
 	Header MessageHeader
 	Type string
@@ -128,12 +122,6 @@ func NewInsertMessage(header MessageHeader, data map[string]interface{}) InsertM
 	return InsertMessage{Header: header, Type: "INSERT", Data: data}
 }
 
-
-func NewInsertMessageAsGenericMessageBuilder(headerBuilderFunc MessageHeaderBuilder, data map[string]interface{}) MessageBuilder {
-	return func (transactionId uint64) Message {
-		return Message(NewInsertMessage(headerBuilderFunc(transactionId), data))
-	}
-}
 
 type DeleteMessage struct {
 	Header MessageHeader
@@ -146,55 +134,44 @@ func NewDeleteMessage(header MessageHeader, data map[string]interface{}) DeleteM
 }
 
 
-func NewDeleteMessageAsGenericMessageBuilder(headerBuilderFunc MessageHeaderBuilder, data map[string]interface{}) MessageBuilder {
-	return func (transactionId uint64) Message {
-		return Message(NewDeleteMessage(headerBuilderFunc(transactionId), data))
-	}
-}
-
-type MessageBuildersFromRowDataFunc func (headerBuilder MessageHeaderBuilder, rowData []map[string]interface{}) []MessageBuilder
 
 
-func CreateUpdateMessageBuildersFromRowData(headerBuilder MessageHeaderBuilder, rowData []map[string]interface{}) []MessageBuilder {
+
+
+func CreateUpdateMessagesFromRowData(header MessageHeader, rowData []map[string]interface{}) []UpdateMessage {
 	if len(rowData) % 2 != 0 {
 		panic("update rows should be old/new pairs") // @FIXME that's pretty nasty
 	}
 
-	var ret []MessageBuilder
-
+	var ret []UpdateMessage
 	var tmp map[string]interface{}
 
-	for index,element := range rowData {
+	for index,data := range rowData {
 		if index % 2 == 0 {
-			tmp = element
+			tmp = data
 		} else {
-			messageBuilder := NewUpdateMessageAsGenericMessageBuilder(headerBuilder, tmp, element)
-			ret = append(ret, messageBuilder)
+			ret = append(ret, NewUpdateMessage(header, tmp, data))
 		}
 	}
 
 	return ret
 }
 
-func CreateInsertMessageBuildersFromRowData(headerBuilder MessageHeaderBuilder, rowData []map[string]interface{}) []MessageBuilder {
-	var ret []MessageBuilder
+func CreateInsertMessagesFromRowData(header MessageHeader, rowData []map[string]interface{}) []InsertMessage {
+	var ret []InsertMessage
 
-	for _,element := range rowData {
-		messageBuilder := NewInsertMessageAsGenericMessageBuilder(headerBuilder, element)
-
-		ret = append(ret, messageBuilder)
+	for _,data := range rowData {
+		ret = append(ret, NewInsertMessage(header, data))
 	}
 
 	return ret
 }
 
-func CreateDeleteMessageBuildersFromRowData(headerBuilder MessageHeaderBuilder, rowData []map[string]interface{}) []MessageBuilder {
-	var ret []MessageBuilder
+func CreateDeleteMessagesFromRowData(header MessageHeader, rowData []map[string]interface{}) []DeleteMessage {
+	var ret []DeleteMessage
 
-	for _,element := range rowData {
-		messageBuilder := NewDeleteMessageAsGenericMessageBuilder(headerBuilder, element)
-
-		ret = append(ret, messageBuilder)
+	for _,data := range rowData {
+		ret = append(ret, NewDeleteMessage(header, data))
 	}
 
 	return ret
@@ -218,56 +195,67 @@ func (m *TableMap) LookupTableMetadata(id uint64) (TableMetadata, bool) {
 	return val, ok
 }
 
-type MessageBuffer struct {
-	buffered []MessageBuilder
+
+type EventBuffer struct {
+	buffered []RowsEventData
 }
 
-func NewMessageBuffer() MessageBuffer {
-	return MessageBuffer{}
+func NewEventBuffer() EventBuffer {
+	return EventBuffer{}
 }
 
-func (mb *MessageBuffer) BufferMessageBuilder(messageBuilder ...MessageBuilder) {
-	mb.buffered = append(mb.buffered, messageBuilder...)
+func (mb *EventBuffer) BufferRowsEventData(d RowsEventData) {
+	mb.buffered = append(mb.buffered, d)
 }
 
-func (mb *MessageBuffer) BuildAllMessagesForTransactionId(transactionId uint64) []Message {
-	fmt.Fprintf(os.Stdout, "### Getting ALL for txid %d\n", transactionId)
-
-	var ret []Message
-
-	for _,messageBuilder := range mb.buffered {
-		ret = append(ret, messageBuilder(transactionId))
-	}
-
+func (mb *EventBuffer) Drain() []RowsEventData {
+	ret := mb.buffered
 	mb.buffered = nil
 
 	return ret
 }
 
-func HandleRowDataEvent(
-	e *replication.BinlogEvent,
-	messageBuilderFromRowDataFunc MessageBuildersFromRowDataFunc,
-	tableMap *TableMap,
-	messageBuffer *MessageBuffer,
-) {
-	rowsEvent := e.Event.(*replication.RowsEvent)
-	tableId := uint64(rowsEvent.TableID)
 
-	tableMetadata, ok := tableMap.LookupTableMetadata(tableId)
+type RowsEventData struct {
+	EventType replication.EventType
+	RowData []map[string]interface{}
+	HeaderBuilder MessageHeaderBuilder
+}
 
-	if ok == false {
-		// @TODO handle this
-		fmt.Fprintf(os.Stdout, "@@@ ERROR table info NOT FOUND\n")
-		return
+
+func ConvertRowsEventsToMessages(xId uint64, rowsEventsData []RowsEventData) []Message {
+	var ret []Message
+
+	for _,d := range rowsEventsData {
+		header := d.HeaderBuilder(xId)
+		rowData := d.RowData
+
+		// @FIXME warn for not handled event type
+		switch d.EventType {
+		case replication.WRITE_ROWS_EVENTv2:
+			for _,message := range CreateInsertMessagesFromRowData(header, rowData) {
+				ret = append(ret, Message(message))
+			}
+
+			break
+
+		case replication.UPDATE_ROWS_EVENTv2:
+			for _,message := range CreateUpdateMessagesFromRowData(header, rowData) {
+				ret = append(ret, Message(message))
+			}
+
+			break
+
+ 		case replication.DELETE_ROWS_EVENTv2:
+			for _,message := range CreateDeleteMessagesFromRowData(header, rowData) {
+				ret = append(ret, Message(message))
+			}
+
+			break
+		}
 	}
 
-	rowData := RowData(rowsEvent, tableMetadata.fields)
-	messageBuilders := messageBuilderFromRowDataFunc(
-		NewMessageHeaderBuilder(tableMetadata.schema, tableMetadata.table, time.Unix(int64(e.Header.Timestamp), 0), e.Header.LogPos),
-		rowData,
-	)
-
-	messageBuffer.BufferMessageBuilder(messageBuilders...)
+	return ret
 }
 
 func main() {
@@ -288,7 +276,7 @@ func main() {
 		panic(db_err.Error()) // @FIXME proper error handling
 	}
 
-	messageBuffer := NewMessageBuffer()
+	eventBuffer := NewEventBuffer()
 	tableMap := NewTableMap(db)
 
 	// parse bin logs
@@ -311,15 +299,15 @@ func main() {
 
 		case replication.XID_EVENT:
 			xidEvent := e.Event.(*replication.XIDEvent)
-			xid := uint64(xidEvent.XID)
+			xId := uint64(xidEvent.XID)
 
-			fmt.Fprintf(os.Stdout, ">>> ending transaction XID %d\n", xid)
+			fmt.Fprintf(os.Stdout, ">>> ending transaction XID %d\n", xId)
 
-			for _,message := range messageBuffer.BuildAllMessagesForTransactionId(xid) {
+			for _,message := range ConvertRowsEventsToMessages(xId, eventBuffer.Drain()) {
 				b, err := json.MarshalIndent(message, "", "    ")
 
 				if err != nil {
-					fmt.Fprintf(os.Stdout, "JSON FAIL %s\n", err)
+					fmt.Fprintf(os.Stdout, "JSON ERROR %s\n", err)
 				} else {
 					fmt.Fprintf(os.Stdout, "%s\n", b)
 				}
@@ -339,23 +327,31 @@ func main() {
 			break
 
 		case replication.WRITE_ROWS_EVENTv2:
-			fmt.Fprintf(os.Stdout, ">>> INSERT event\n")
-			messageBuildersFromRowDataFunc := CreateInsertMessageBuildersFromRowData
-			HandleRowDataEvent(e, messageBuildersFromRowDataFunc, &tableMap, &messageBuffer)
-
-			break
-
+			fallthrough
 		case replication.UPDATE_ROWS_EVENTv2:
-			fmt.Fprintf(os.Stdout, ">>> UPDATE event\n")
-			messageBuildersFromRowDataFunc := CreateUpdateMessageBuildersFromRowData
-			HandleRowDataEvent(e, messageBuildersFromRowDataFunc, &tableMap, &messageBuffer)
-
-			break
-
+			fallthrough
  		case replication.DELETE_ROWS_EVENTv2:
-			fmt.Fprintf(os.Stdout, ">>> DELETE event\n")
-			messageBuildersFromRowDataFunc := CreateDeleteMessageBuildersFromRowData
-			HandleRowDataEvent(e, messageBuildersFromRowDataFunc, &tableMap, &messageBuffer)
+			rowsEvent := e.Event.(*replication.RowsEvent)
+
+			tableId := uint64(rowsEvent.TableID)
+			tableMetadata, ok := tableMap.LookupTableMetadata(tableId)
+
+			if ok == false {
+				// @TODO handle this
+				fmt.Fprintf(os.Stdout, "@@@ ERROR table info NOT FOUND\n")
+				break
+			}
+
+			rowData := RowData(rowsEvent, tableMetadata.fields)
+
+			headerBuilder := NewMessageHeaderBuilder(
+				tableMetadata.schema,
+				tableMetadata.table,
+				time.Unix(int64(e.Header.Timestamp), 0),
+				e.Header.LogPos,
+			)
+
+			eventBuffer.BufferRowsEventData(RowsEventData{e.Header.EventType, rowData, headerBuilder})
 
 			break
 
@@ -372,123 +368,3 @@ func main() {
 		println(err)
 	}
 }
-
-
-
-
-// 		switch e.Header.EventType {
-// 		// @TODO add query message
-// 		case replication.QUERY_EVENT:
-// 			queryEvent := e.Event.(*replication.QueryEvent)
-// 			query := string(queryEvent.Query)
-
-// 			// if strings.ToUpper(strings.Trim(query, " ")) == "BEGIN" {
-// 			// }
-// 			// xid := uint64(xidEvent.XID)
-
-// 			fmt.Fprintf(os.Stdout, "POS at %d \n", e.Header.LogPos)
-// 			fmt.Fprintf(os.Stdout, "query %s ###\n", query)
-
-// 			break;
-
-// 		case replication.XID_EVENT:
-// 			xidEvent := e.Event.(*replication.XIDEvent)
-// 			xid := uint64(xidEvent.XID)
-
-// //			transactionLog.GetAll(xid)
-
-// 			fmt.Fprintf(os.Stdout, "POS at %d \n", e.Header.LogPos)
-// 			fmt.Fprintf(os.Stdout, "XID %d ###\n", xid)
-
-// 			break;
-
-// 		case replication.UPDATE_ROWS_EVENTv2:
-// 			updateRowsEvent := e.Event.(*replication.RowsEvent)
-// 			tableId := uint64(updateRowsEvent.TableID)
-
-// 			// let's check only bob tables
-// 			if InterestingTable(tableMap[tableId]) == false {
-// 				break
-// 			}
-
-// 			columnNames := GetFields(db, "test_db", tableMap[tableId].b)
-// 			rowData := RowData(updateRowsEvent, columnNames)
-
-// 			for _,element := range CreateUpdateMessageBuilders(tableMap[tableId], time.Unix(int64(e.Header.Timestamp), 0), e.Header.LogPos, rowData) {
-// 				b, err := json.MarshalIndent(element, "", "    ")
-
-// 				if err != nil {
-// 					fmt.Fprintf(os.Stdout, "%s\n", err)
-// 				} else {
-// 					fmt.Fprintf(os.Stdout, "%s\n", b)
-// 				}
-// 			}
-
-// 			break;
-
-// 		case replication.WRITE_ROWS_EVENTv2:
-// 			writeRowsEvent := e.Event.(*replication.RowsEvent)
-// 			tableId := uint64(writeRowsEvent.TableID)
-
-// 			// let's check only bob tables
-// 			if InterestingTable(tableMap[tableId]) == false {
-// 				break
-// 			}
-
-// 			columnNames := GetFields(db, "test_db", tableMap[tableId].b)
-// 			rowData := RowData(writeRowsEvent, columnNames)
-
-// 			for _,element := range CreateInsertMessageBuilders(tableMap[tableId], time.Unix(int64(e.Header.Timestamp), 0), e.Header.LogPos, rowData) {
-// 				_, err := json.MarshalIndent(element, "", "    ")
-
-// 				if err != nil {
-// 					fmt.Fprintf(os.Stdout, "%s\n", err)
-// 				} else {
-// 					fmt.Fprintf(os.Stdout, "XXX outputting message\n")
-
-// 					//fmt.Fprintf(os.Stdout, "XXX INSERT MESSAGE:\n%s\n", b)
-// 				}
-// 			}
-
-// 			fmt.Fprintf(os.Stdout, "XXX ==============\n")
-
-// 			break;
-
-// 		case replication.DELETE_ROWS_EVENTv2:
-// 			deleteRowsEvent := e.Event.(*replication.RowsEvent)
-// 			tableId := uint64(deleteRowsEvent.TableID)
-
-// 			// let's check only bob tables
-// 			if InterestingTable(tableMap[tableId]) == false {
-// 				break
-// 			}
-
-// 			// get bob table fields from our local test_db
-// 			columnNames := GetFields(db, "test_db", tableMap[tableId].b)
-// 			rowData := RowData(deleteRowsEvent, columnNames)
-
-// 			for _,element := range CreateDeleteMessageBuilders(tableMap[tableId], time.Unix(int64(e.Header.Timestamp), 0), e.Header.LogPos, rowData) {
-// 				b, err := json.MarshalIndent(element, "", "    ")
-
-// 				if err != nil {
-// 					fmt.Fprintf(os.Stdout, "%s\n", err)
-// 				} else {
-// 					fmt.Fprintf(os.Stdout, "%s\n", b)
-// 				}
-// 			}
-
-// 			break;
-
-// 		case replication.TABLE_MAP_EVENT:
-// 			tableMapEvent := e.Event.(*replication.TableMapEvent)
-// 			schema := string(tableMapEvent.Schema)
-// 			table := string(tableMapEvent.Table)
-// 			tableId := uint64(tableMapEvent.TableID)
-
-// 			tableMap[tableId] = TableMetadata{schema, table}
-
-// 			break;
-
-// 		default:
-// 			break;
-// 		}

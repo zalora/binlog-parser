@@ -1,0 +1,30 @@
+[submodule "_vendor/src/golang.org/x/net"]
+	path = _vendor/src/golang.org/x/net
+	url = https://go.googlesource.com/net
+[submodule "_vendor/src/github.com/BurntSushi/toml"]
+	path = _vendor/src/github.com/BurntSushi/toml
+	url = https://github.com/BurntSushi/toml
+[submodule "_vendor/src/github.com/go-sql-driver/mysql"]
+	path = _vendor/src/github.com/go-sql-driver/mysql
+	url = https://github.com/go-sql-driver/mysql
+[submodule "errors"]
+	path = errors
+	url = https://github.com/juju/errors
+[submodule "_vendor/src/github.com/juju/errors"]
+	path = _vendor/src/github.com/juju/errors
+	url = https://github.com/juju/errors
+[submodule "_vendor/src/github.com/ngaut/log"]
+	path = _vendor/src/github.com/ngaut/log
+	url = https://github.com/ngaut/log
+[submodule "go.uuid"]
+	path = go.uuid
+	url = https://github.com/satori/go.uuid
+[submodule "_vendor/src/github.com/satori/go.uuid"]
+	path = _vendor/src/github.com/satori/go.uuid
+	url = https://github.com/satori/go.uuid
+[submodule "_vendor/src/github.com/siddontang/go"]
+	path = _vendor/src/github.com/siddontang/go
+	url = https://github.com/siddontang/go
+[submodule "_vendor/src/github.com/siddontang/go-mysql"]
+	path = _vendor/src/github.com/siddontang/go-mysql
+	url = https://github.com/siddontang/go-mysql

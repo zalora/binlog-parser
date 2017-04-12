@@ -88,6 +88,15 @@ func NewMessageHeader(schema string, table string, binlogMessageTime time.Time, 
 	}
 }
 
+
+func NewMinimalMessageHeader(binlogMessageTime time.Time, binlogPosition uint32) MessageHeader {
+	return MessageHeader {
+		BinlogMessageTime: binlogMessageTime.Format(time.RFC3339),
+		MessageTime: time.Now().Format(time.RFC3339Nano),
+		BinlogPosition: binlogPosition,
+	}
+}
+
 type MessageHeaderBuilder func(uint64) MessageHeader
 
 func NewMessageHeaderBuilder(schema string, table string, binlogMessageTime time.Time, binlogPosition uint32) MessageHeaderBuilder {
@@ -99,7 +108,17 @@ func NewMessageHeaderBuilder(schema string, table string, binlogMessageTime time
 type Message interface {
 }
 
-type MessageBuilder func(uint64) Message
+type SqlQuery string
+
+type QueryMessage struct {
+	Header MessageHeader
+	Type string
+	Query SqlQuery
+}
+
+func NewQueryMessage(header MessageHeader, query SqlQuery) QueryMessage {
+	return QueryMessage{Header: header, Type: "QUERY", Query: query}
+}
 
 type UpdateMessage struct {
 	Header MessageHeader
@@ -196,19 +215,19 @@ func (m *TableMap) LookupTableMetadata(id uint64) (TableMetadata, bool) {
 }
 
 
-type EventBuffer struct {
+type RowsEventBuffer struct {
 	buffered []RowsEventData
 }
 
-func NewEventBuffer() EventBuffer {
-	return EventBuffer{}
+func NewRowsEventBuffer() RowsEventBuffer {
+	return RowsEventBuffer{}
 }
 
-func (mb *EventBuffer) BufferRowsEventData(d RowsEventData) {
+func (mb *RowsEventBuffer) BufferRowsEventData(d RowsEventData) {
 	mb.buffered = append(mb.buffered, d)
 }
 
-func (mb *EventBuffer) Drain() []RowsEventData {
+func (mb *RowsEventBuffer) Drain() []RowsEventData {
 	ret := mb.buffered
 	mb.buffered = nil
 
@@ -221,7 +240,6 @@ type RowsEventData struct {
 	RowData []map[string]interface{}
 	HeaderBuilder MessageHeaderBuilder
 }
-
 
 func ConvertRowsEventsToMessages(xId uint64, rowsEventsData []RowsEventData) []Message {
 	var ret []Message
@@ -258,6 +276,18 @@ func ConvertRowsEventsToMessages(xId uint64, rowsEventsData []RowsEventData) []M
 	return ret
 }
 
+func DumpMessage(messages ...Message) {
+	for _,message := range messages {
+		b, err := json.MarshalIndent(message, "", "    ")
+
+		if err != nil {
+			fmt.Fprintf(os.Stdout, "JSON ERROR %s\n", err)
+		} else {
+			fmt.Fprintf(os.Stdout, "%s\n", b)
+		}
+	}
+}
+
 func main() {
 	name := os.Args[1]
 
@@ -276,7 +306,7 @@ func main() {
 		panic(db_err.Error()) // @FIXME proper error handling
 	}
 
-	eventBuffer := NewEventBuffer()
+	rowRowsEventBuffer := NewRowsEventBuffer()
 	tableMap := NewTableMap(db)
 
 	// parse bin logs
@@ -293,6 +323,11 @@ func main() {
 
 			if strings.ToUpper(strings.Trim(query, " ")) == "BEGIN" {
 				fmt.Fprintf(os.Stdout, "> beginning transaction\n")
+			} else {
+				header := NewMinimalMessageHeader(time.Unix(int64(e.Header.Timestamp), 0), e.Header.LogPos)
+				message := NewQueryMessage(header, SqlQuery(query))
+
+				DumpMessage(message)
 			}
 
 			break
@@ -302,16 +337,7 @@ func main() {
 			xId := uint64(xidEvent.XID)
 
 			fmt.Fprintf(os.Stdout, ">>> ending transaction XID %d\n", xId)
-
-			for _,message := range ConvertRowsEventsToMessages(xId, eventBuffer.Drain()) {
-				b, err := json.MarshalIndent(message, "", "    ")
-
-				if err != nil {
-					fmt.Fprintf(os.Stdout, "JSON ERROR %s\n", err)
-				} else {
-					fmt.Fprintf(os.Stdout, "%s\n", b)
-				}
-			}
+			DumpMessage(ConvertRowsEventsToMessages(xId, rowRowsEventBuffer.Drain()) ...)
 
 			break
 
@@ -351,7 +377,7 @@ func main() {
 				e.Header.LogPos,
 			)
 
-			eventBuffer.BufferRowsEventData(RowsEventData{e.Header.EventType, rowData, headerBuilder})
+			rowRowsEventBuffer.BufferRowsEventData(RowsEventData{e.Header.EventType, rowData, headerBuilder})
 
 			break
 

@@ -1,0 +1,127 @@
+/*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=1*/;
+/*!40019 SET @@session.max_insert_delayed_threads=0*/;
+/*!50003 SET @OLD_COMPLETION_TYPE=@@COMPLETION_TYPE,COMPLETION_TYPE=0*/;
+DELIMITER /*!*/;
+# at 4
+#170413 14:34:12 server id 1  end_log_pos 120 CRC32 0x8a1a4b5f 	Start: binlog v 4, server v 5.6.35-log created 170413 14:34:12 at startup
+# Warning: this binlog is either in use or was not closed properly.
+ROLLBACK/*!*/;
+# at 120
+#170413 14:34:30 server id 1  end_log_pos 197 CRC32 0xd97f04a0 	Query	thread_id=1	exec_time=0	error_code=0
+SET TIMESTAMP=1492065270/*!*/;
+SET @@session.pseudo_thread_id=1/*!*/;
+SET @@session.foreign_key_checks=1, @@session.sql_auto_is_null=0, @@session.unique_checks=1, @@session.autocommit=1/*!*/;
+SET @@session.sql_mode=1075838976/*!*/;
+SET @@session.auto_increment_increment=1, @@session.auto_increment_offset=1/*!*/;
+/*!\C utf8 *//*!*/;
+SET @@session.character_set_client=33,@@session.collation_connection=33,@@session.collation_server=33/*!*/;
+SET @@session.lc_time_names=0/*!*/;
+SET @@session.collation_database=DEFAULT/*!*/;
+BEGIN
+/*!*/;
+# at 197
+#170413 14:34:30 server id 1  end_log_pos 258 CRC32 0xb6f711f4 	Table_map: `test_db`.`buildings` mapped to number 70
+# at 258
+#170413 14:34:30 server id 1  end_log_pos 397 CRC32 0x726311dc 	Write_rows: table id 70 flags: STMT_END_F
+### INSERT INTO `test_db`.`buildings`
+### SET
+###   @1=1 /* INT meta=0 nullable=0 is_null=0 */
+###   @2='ACME Headquaters' /* VARSTRING(765) meta=765 nullable=0 is_null=0 */
+###   @3='3950 North 1st Street CA 95134' /* VARSTRING(1065) meta=1065 nullable=0 is_null=0 */
+### INSERT INTO `test_db`.`buildings`
+### SET
+###   @1=2 /* INT meta=0 nullable=0 is_null=0 */
+###   @2='ACME Sales' /* VARSTRING(765) meta=765 nullable=0 is_null=0 */
+###   @3='5000 North 1st Street CA 95134' /* VARSTRING(1065) meta=1065 nullable=0 is_null=0 */
+# at 397
+#170413 14:34:30 server id 1  end_log_pos 428 CRC32 0xd2727e33 	Xid = 9
+COMMIT/*!*/;
+# at 428
+#170413 14:34:37 server id 1  end_log_pos 503 CRC32 0xbe1dca2d 	Query	thread_id=1	exec_time=0	error_code=0
+SET TIMESTAMP=1492065277/*!*/;
+BEGIN
+/*!*/;
+# at 503
+#170413 14:34:37 server id 1  end_log_pos 558 CRC32 0x9f3b72da 	Table_map: `test_db`.`rooms` mapped to number 71
+# at 558
+#170413 14:34:37 server id 1  end_log_pos 692 CRC32 0x46c0e76b 	Write_rows: table id 71 flags: STMT_END_F
+### INSERT INTO `test_db`.`rooms`
+### SET
+###   @1=1 /* INT meta=0 nullable=0 is_null=0 */
+###   @2='Amazon' /* VARSTRING(765) meta=765 nullable=0 is_null=0 */
+###   @3=1 /* INT meta=0 nullable=0 is_null=0 */
+### INSERT INTO `test_db`.`rooms`
+### SET
+###   @1=2 /* INT meta=0 nullable=0 is_null=0 */
+###   @2='War Room' /* VARSTRING(765) meta=765 nullable=0 is_null=0 */
+###   @3=1 /* INT meta=0 nullable=0 is_null=0 */
+### INSERT INTO `test_db`.`rooms`
+### SET
+###   @1=3 /* INT meta=0 nullable=0 is_null=0 */
+###   @2='Office of CEO' /* VARSTRING(765) meta=765 nullable=0 is_null=0 */
+###   @3=1 /* INT meta=0 nullable=0 is_null=0 */
+### INSERT INTO `test_db`.`rooms`
+### SET
+###   @1=4 /* INT meta=0 nullable=0 is_null=0 */
+###   @2='Marketing' /* VARSTRING(765) meta=765 nullable=0 is_null=0 */
+###   @3=2 /* INT meta=0 nullable=0 is_null=0 */
+### INSERT INTO `test_db`.`rooms`
+### SET
+###   @1=5 /* INT meta=0 nullable=0 is_null=0 */
+###   @2='Showroom' /* VARSTRING(765) meta=765 nullable=0 is_null=0 */
+###   @3=2 /* INT meta=0 nullable=0 is_null=0 */
+# at 692
+#170413 14:34:37 server id 1  end_log_pos 723 CRC32 0x2cdae9e4 	Xid = 10
+COMMIT/*!*/;
+# at 723
+#170413 14:34:58 server id 1  end_log_pos 798 CRC32 0x4958330e 	Query	thread_id=1	exec_time=0	error_code=0
+SET TIMESTAMP=1492065298/*!*/;
+BEGIN
+/*!*/;
+# at 798
+#170413 14:34:58 server id 1  end_log_pos 853 CRC32 0x5e3852c5 	Table_map: `test_db`.`rooms` mapped to number 71
+# at 853
+#170413 14:34:58 server id 1  end_log_pos 967 CRC32 0xff57df46 	Update_rows: table id 71 flags: STMT_END_F
+### UPDATE `test_db`.`rooms`
+### WHERE
+###   @1=4 /* INT meta=0 nullable=0 is_null=0 */
+###   @2='Marketing' /* VARSTRING(765) meta=765 nullable=0 is_null=0 */
+###   @3=2 /* INT meta=0 nullable=0 is_null=0 */
+### SET
+###   @1=4 /* INT meta=0 nullable=0 is_null=0 */
+###   @2='MARKETING' /* VARSTRING(765) meta=765 nullable=0 is_null=0 */
+###   @3=2 /* INT meta=0 nullable=0 is_null=0 */
+### UPDATE `test_db`.`rooms`
+### WHERE
+###   @1=5 /* INT meta=0 nullable=0 is_null=0 */
+###   @2='Showroom' /* VARSTRING(765) meta=765 nullable=0 is_null=0 */
+###   @3=2 /* INT meta=0 nullable=0 is_null=0 */
+### SET
+###   @1=5 /* INT meta=0 nullable=0 is_null=0 */
+###   @2='SHOWROOM' /* VARSTRING(765) meta=765 nullable=0 is_null=0 */
+###   @3=2 /* INT meta=0 nullable=0 is_null=0 */
+# at 967
+#170413 14:34:58 server id 1  end_log_pos 998 CRC32 0x50be55c1 	Xid = 12
+COMMIT/*!*/;
+# at 998
+#170413 14:35:36 server id 1  end_log_pos 1075 CRC32 0xe278796f 	Query	thread_id=1	exec_time=0	error_code=0
+SET TIMESTAMP=1492065336/*!*/;
+BEGIN
+/*!*/;
+# at 1075
+#170413 14:35:36 server id 1  end_log_pos 1136 CRC32 0xdb5a6fdf 	Table_map: `test_db`.`buildings` mapped to number 70
+# at 1136
+#170413 14:35:36 server id 1  end_log_pos 1226 CRC32 0xadfa4990 	Delete_rows: table id 70 flags: STMT_END_F
+### DELETE FROM `test_db`.`buildings`
+### WHERE
+###   @1=1 /* INT meta=0 nullable=0 is_null=0 */
+###   @2='ACME Headquaters' /* VARSTRING(765) meta=765 nullable=0 is_null=0 */
+###   @3='3950 North 1st Street CA 95134' /* VARSTRING(1065) meta=1065 nullable=0 is_null=0 */
+# at 1226
+#170413 14:35:36 server id 1  end_log_pos 1257 CRC32 0x9a0f56b0 	Xid = 14
+COMMIT/*!*/;
+DELIMITER ;
+# End of log file
+ROLLBACK /* added by mysqlbinlog */;
+/*!50003 SET COMPLETION_TYPE=@OLD_COMPLETION_TYPE*/;
+/*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=0*/;

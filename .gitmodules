@@ -28,3 +28,9 @@
 [submodule "_vendor/src/github.com/siddontang/go-mysql"]
 	path = _vendor/src/github.com/siddontang/go-mysql
 	url = https://github.com/siddontang/go-mysql
+[submodule "_vendor/src/github.com/mattn/go-sqlite3"]
+	path = _vendor/src/github.com/mattn/go-sqlite3
+	url = https://github.com/mattn/go-sqlite3
+[submodule "_vendor/src/github.com/golang/glog"]
+	path = _vendor/src/github.com/golang/glog
+	url = https://github.com/golang/glog

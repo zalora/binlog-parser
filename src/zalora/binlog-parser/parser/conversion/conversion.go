@@ -105,7 +105,7 @@ func rowData(rowsEvent replication.RowsEvent, columnNames map[int]string) []map[
 	var ret []map[string]interface{}
 
 	for _, rows := range rowsEvent.Rows {
-		var data map[string]interface{}
+		data := make(map[string]interface{})
 		unknownCount := 0;
 
 		for j, d := range rows {

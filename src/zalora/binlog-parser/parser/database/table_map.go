@@ -29,7 +29,11 @@ func (m *TableMap) LookupTableMetadata(id uint64) (TableMetadata, bool) {
 }
 
 func getFields(db* sql.DB, schema string, table string) map[int]string {
-	rows, db_err := db.Query("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?", schema, table)
+	rows, db_err := db.Query(
+		"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?",
+		schema,
+		table,
+	)
 
 	if db_err != nil {
 		panic(db_err.Error()) // @FIXME proper error handling

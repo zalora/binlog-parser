@@ -17,7 +17,6 @@ type MessageHeader struct {
 	Schema string
 	Table string
 	BinlogMessageTime string
-	MessageTime string
 	BinlogPosition uint32
 	XId uint64
 }
@@ -27,7 +26,6 @@ func NewMessageHeader(schema string, table string, binlogMessageTime time.Time, 
 		Schema: schema,
 		Table: table,
 		BinlogMessageTime: binlogMessageTime.Format(time.RFC3339),
-		MessageTime: time.Now().Format(time.RFC3339Nano),
 		BinlogPosition: binlogPosition,
 		XId: xId,
 	}
@@ -36,7 +34,6 @@ func NewMessageHeader(schema string, table string, binlogMessageTime time.Time, 
 func NewMinimalMessageHeader(binlogMessageTime time.Time, binlogPosition uint32) MessageHeader {
 	return MessageHeader {
 		BinlogMessageTime: binlogMessageTime.Format(time.RFC3339),
-		MessageTime: time.Now().Format(time.RFC3339Nano),
 		BinlogPosition: binlogPosition,
 	}
 }

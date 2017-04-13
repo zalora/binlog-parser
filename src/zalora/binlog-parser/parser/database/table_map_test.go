@@ -4,12 +4,11 @@ import (
 	"testing"
 	"fmt"
 	"reflect"
-	"database/sql"
-	_ "github.com/go-sql-driver/mysql"
+ 	"zalora/binlog-parser/parser/test"
 )
 
 func TestLookupTableMetadata(t *testing.T) {
-	db := setupDb()
+	db := GetDatabaseInstance(test.TEST_DB_CONNECTION_STRING)
 	defer db.Close()
 
 	t.Run("Found", func(t *testing.T) {
@@ -51,22 +50,6 @@ func TestLookupTableMetadata(t *testing.T) {
 		}
 	})
 
-}
-
-func setupDb() *sql.DB {
-	db, db_err := sql.Open("mysql", "root@/test_db")
-
-	if db_err != nil {
-		panic(db_err.Error())
-	}
-
-	db_err = db.Ping()
-
-	if db_err != nil {
-		panic(db_err.Error())
-	}
-
-	return db
 }
 
 func assertTableMetadata(t *testing.T, tableMap *TableMap, tableId uint64, expectedSchema string, expectedTable string) {

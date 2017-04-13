@@ -3,43 +3,17 @@ package parser
 import (
 	"testing"
 	"fmt"
-	"flag"
-	"os"
 	"path"
 	"io/ioutil"
-	"database/sql"
 	"strings"
 	"encoding/json"
  	"zalora/binlog-parser/parser/database"
  	"zalora/binlog-parser/parser/messages"
-	_ "github.com/go-sql-driver/mysql"
+ 	"zalora/binlog-parser/parser/test"
 )
 
-func setupDb() *sql.DB {
-	db, db_err := sql.Open("mysql", "root@/test_db")
-
-	if db_err != nil {
-		panic(db_err.Error())
-	}
-
-	db_err = db.Ping()
-
-	if db_err != nil {
-		panic(db_err.Error())
-	}
-
-	return db
-}
-
-func TestMain(m *testing.M) {
-	flag.Set("alsologtostderr", "true")
-	flag.Set("v", "5")
-
-	os.Exit(m.Run())
-}
-
 func TestBinlogToMessages(t *testing.T) {
-	db := setupDb()
+	db := database.GetDatabaseInstance(test.TEST_DB_CONNECTION_STRING)
 	defer db.Close()
 
 	t.Run("Binlog file not found", func(t *testing.T) {
@@ -65,6 +39,7 @@ func TestBinlogToMessages(t *testing.T) {
 		assertMessages(t, collectedMessages, "fixtures/01.json")
 	})
 
+	// insert into a table that is dropped later on, fields not found
 	t.Run("Parse binlog #2", func(t *testing.T) {
 		tableMap := database.NewTableMap(db)
 
@@ -98,7 +73,7 @@ func doParseBinlogToMessages(binlogFileName string, offset int64, tableMap datab
 		collectedMessages = append(collectedMessages, m)
 	}
 
-	err := ParseBinlogToMessages(path.Join(os.Getenv("DATA_DIR"), binlogFileName), offset, tableMap, consumeMessage)
+	err := ParseBinlogToMessages(path.Join(test.GetDataDir(), binlogFileName), offset, tableMap, consumeMessage)
 
 	if err != nil {
 		return nil, err
@@ -108,7 +83,7 @@ func doParseBinlogToMessages(binlogFileName string, offset int64, tableMap datab
 }
 
 func assertMessages(t *testing.T, messages []messages.Message, compareAgainstFileName string) {
-	fileContent, err := ioutil.ReadFile(path.Join(os.Getenv("DATA_DIR"), compareAgainstFileName))
+	fileContent, err := ioutil.ReadFile(path.Join(test.GetDataDir(), compareAgainstFileName))
 
 	if err != nil {
 		t.Fatal(fmt.Sprintf("Failed to compare against file - failed to get file content from %s", compareAgainstFileName))

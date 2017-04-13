@@ -2,7 +2,7 @@ GOCC := env GOPATH=$(CURDIR)/_vendor:$(CURDIR) go
 SRC_DIR := zalora/binlog-parser/...
 
 all:
-	$(GOCC) install $(PROJECT_DIR)
+	$(GOCC) install $(SRC_DIR)
 
 deps:
 	git submodule --update --init

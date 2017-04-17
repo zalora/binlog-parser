@@ -38,47 +38,59 @@ func NewMinimalMessageHeader(binlogMessageTime time.Time, binlogPosition uint32)
 	}
 }
 
-type Message interface {}
+type Message interface {
+    GetHeader() MessageHeader
+    GetType() MessageType
+}
+
+type baseMessage struct {
+    Header MessageHeader
+    Type MessageType
+}
+
+func (b baseMessage) GetHeader() MessageHeader {
+    return b.Header
+}
+
+func (b baseMessage) GetType() MessageType {
+    return b.Type
+}
 
 type SqlQuery string
 
 type QueryMessage struct {
-	Header MessageHeader
-	Type MessageType
+	baseMessage
 	Query SqlQuery
 }
 
 func NewQueryMessage(header MessageHeader, query SqlQuery) QueryMessage {
-	return QueryMessage{Header: header, Type: MESSAGE_TYPE_QUERY, Query: query}
+	return QueryMessage{baseMessage: baseMessage{Header: header, Type: MESSAGE_TYPE_QUERY}, Query: query}
 }
 
 type UpdateMessage struct {
-	Header MessageHeader
-	Type MessageType
+	baseMessage
 	OldData map[string]interface{}
 	NewData map[string]interface{}
 }
 
 func NewUpdateMessage(header MessageHeader, oldData map[string]interface{}, newData map[string]interface{}) UpdateMessage {
-	return UpdateMessage{Header: header, Type: MESSAGE_TYPE_UPDATE, OldData: oldData, NewData: newData}
+	return UpdateMessage{baseMessage: baseMessage{Header: header, Type: MESSAGE_TYPE_UPDATE}, OldData: oldData, NewData: newData}
 }
 
 type InsertMessage struct {
-	Header MessageHeader
-	Type MessageType
+	baseMessage
 	Data map[string]interface{}
 }
 
 func NewInsertMessage(header MessageHeader, data map[string]interface{}) InsertMessage {
-	return InsertMessage{Header: header, Type: MESSAGE_TYPE_INSERT, Data: data}
+	return InsertMessage{baseMessage: baseMessage{Header: header, Type: MESSAGE_TYPE_INSERT}, Data: data}
 }
 
 type DeleteMessage struct {
-	Header MessageHeader
-	Type MessageType
+	baseMessage
 	Data map[string]interface{}
 }
 
 func NewDeleteMessage(header MessageHeader, data map[string]interface{}) DeleteMessage {
-	return DeleteMessage{Header: header, Type: MESSAGE_TYPE_DELETE, Data: data}
+	return DeleteMessage{baseMessage: baseMessage{Header: header, Type: MESSAGE_TYPE_DELETE}, Data: data}
 }

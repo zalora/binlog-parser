@@ -7,7 +7,10 @@ all:
 deps:
 	git submodule --update --init
 
+test-setup:
+	mysql -uroot < data/fixtures/test_db.sql
+
 test:
 	env DATA_DIR=$(CURDIR)/data $(GOCC) test -v $(SRC_DIR)
 
-.PHONY: all deps test
+.PHONY: all deps test test-setup

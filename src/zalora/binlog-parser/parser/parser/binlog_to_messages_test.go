@@ -19,7 +19,7 @@ func TestBinlogToMessages(t *testing.T) {
 	t.Run("Binlog file not found", func(t *testing.T) {
 		tableMap := database.NewTableMap(db)
 
-		_, err := doParseBinlogToMessages("not_there", 0, tableMap)
+		_, err := doParseBinlogToMessages("not_there", tableMap)
 
 		if err == nil {
 			t.Fatal("Expected error when opening non-existant file")
@@ -30,7 +30,7 @@ func TestBinlogToMessages(t *testing.T) {
 	t.Run("Parse binlog #1", func(t *testing.T) {
 		tableMap := database.NewTableMap(db)
 
-		collectedMessages, err := doParseBinlogToMessages("fixtures/mysql-bin.01", 0, tableMap)
+		collectedMessages, err := doParseBinlogToMessages("fixtures/mysql-bin.01", tableMap)
 
 		if err != nil {
 			t.Fatal("Expected to parse binlog")
@@ -43,7 +43,7 @@ func TestBinlogToMessages(t *testing.T) {
 	t.Run("Parse binlog #2", func(t *testing.T) {
 		tableMap := database.NewTableMap(db)
 
-		collectedMessages, err := doParseBinlogToMessages("fixtures/mysql-bin.02", 0, tableMap)
+		collectedMessages, err := doParseBinlogToMessages("fixtures/mysql-bin.02", tableMap)
 
 		if err != nil {
 			t.Fatal("Expected to parse binlog")
@@ -51,29 +51,16 @@ func TestBinlogToMessages(t *testing.T) {
 
 		assertMessages(t, collectedMessages, "fixtures/02.json")
 	})
-
-	// disabled for now, see https://github.com/siddontang/go-mysql/issues/127
-	// t.Run("Parse binlog #1, starting from position", func(t *testing.T) {
-	// 	tableMap := database.NewTableMap(db)
-
-	// 	collectedMessages, err := doParseBinlogToMessages("fixtures/mysql-bin.01", 428, tableMap)
-
-	// 	if err != nil {
-	// 		t.Fatal("Expected to parse binlog")
-	// 	}
-
-	// 	assertMessages(t, collectedMessages, "fixtures/01.json")
-	// })
 }
 
-func doParseBinlogToMessages(binlogFileName string, offset int64, tableMap database.TableMap) ([]messages.Message, error) {
+func doParseBinlogToMessages(binlogFileName string, tableMap database.TableMap) ([]messages.Message, error) {
 	var collectedMessages []messages.Message
 
 	consumeMessage := func (m messages.Message) {
 		collectedMessages = append(collectedMessages, m)
 	}
 
-	err := ParseBinlogToMessages(path.Join(test.GetDataDir(), binlogFileName), offset, tableMap, consumeMessage)
+	err := ParseBinlogToMessages(path.Join(test.GetDataDir(), binlogFileName), tableMap, consumeMessage)
 
 	if err != nil {
 		return nil, err

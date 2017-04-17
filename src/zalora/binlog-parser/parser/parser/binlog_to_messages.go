@@ -9,7 +9,7 @@ import (
 	"github.com/golang/glog"
 )
 
-func ParseBinlogToMessages(binlogFileName string, offset int64, tableMap database.TableMap, consumer func(messages.Message)) error {
+func ParseBinlogToMessages(binlogFileName string, tableMap database.TableMap, consumer func(messages.Message)) error {
 	rowRowsEventBuffer := NewRowsEventBuffer()
 
 	p := replication.NewBinlogParser()
@@ -86,5 +86,5 @@ func ParseBinlogToMessages(binlogFileName string, offset int64, tableMap databas
 		return nil
 	}
 
-	return p.ParseFile(binlogFileName, offset, f)
+	return p.ParseFile(binlogFileName, 0, f)
 }

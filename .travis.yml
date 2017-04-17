@@ -6,6 +6,7 @@ services:
 install:
         - make test-setup
         - make deps
+        - go version
 
 script:
         - make

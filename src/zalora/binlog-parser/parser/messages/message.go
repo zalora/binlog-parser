@@ -25,7 +25,7 @@ func NewMessageHeader(schema string, table string, binlogMessageTime time.Time, 
 	return MessageHeader {
 		Schema: schema,
 		Table: table,
-		BinlogMessageTime: binlogMessageTime.Format(time.RFC3339),
+		BinlogMessageTime: binlogMessageTime.UTC().Format(time.RFC3339),
 		BinlogPosition: binlogPosition,
 		XId: xId,
 	}

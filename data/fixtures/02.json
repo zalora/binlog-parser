@@ -14,7 +14,7 @@
         "Header": {
             "Schema": "test_db",
             "Table": "employees",
-            "BinlogMessageTime": "2017-04-13T16:02:04+08:00",
+            "BinlogMessageTime": "2017-04-13T08:02:04Z",
             "BinlogPosition": 635,
             "XId": 8
         },

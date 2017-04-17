@@ -11,6 +11,6 @@ test-setup:
 	mysql -uroot < data/fixtures/test_db.sql
 
 test:
-	env DATA_DIR=$(CURDIR)/data $(GOCC) test -v $(SRC_DIR)
+	env DATA_DIR=$(CURDIR)/data $(GOCC) test -cover -v $(SRC_DIR)
 
 .PHONY: all deps test test-setup

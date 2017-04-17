@@ -4,7 +4,7 @@ import (
 	"strings"
 	"zalora/binlog-parser/parser/messages"
 	"zalora/binlog-parser/parser/conversion"
-	"zalora/binlog-parser/parser/database"
+	"zalora/binlog-parser/database"
 	"github.com/siddontang/go-mysql/replication"
 	"github.com/golang/glog"
 )

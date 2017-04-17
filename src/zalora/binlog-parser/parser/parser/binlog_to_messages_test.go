@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"strings"
 	"encoding/json"
- 	"zalora/binlog-parser/parser/database"
+ 	"zalora/binlog-parser/database"
  	"zalora/binlog-parser/parser/messages"
  	"zalora/binlog-parser/test"
 )

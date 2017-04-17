@@ -6,7 +6,7 @@ package main
 // 	"fmt"
 // 	"database/sql"
 // 	"zalora/binlog-parser/parser/messages"
-// 	"zalora/binlog-parser/parser/database"
+// 	"zalora/binlog-parser/database"
 // 	_ "github.com/go-sql-driver/mysql"
 // )
 

@@ -4,7 +4,7 @@ import (
 	"time"
 	"fmt"
 	"zalora/binlog-parser/parser/messages"
-	"zalora/binlog-parser/parser/database"
+	"zalora/binlog-parser/database"
 	"github.com/siddontang/go-mysql/replication"
 )
 

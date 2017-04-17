@@ -9,7 +9,9 @@ import (
 	"github.com/golang/glog"
 )
 
-func ParseBinlogToMessages(binlogFileName string, tableMap database.TableMap, consumer func(messages.Message)) error {
+type ConsumerFunc func(messages.Message) error
+
+func ParseBinlogToMessages(binlogFileName string, tableMap database.TableMap, consumer ConsumerFunc) error {
 	rowRowsEventBuffer := NewRowsEventBuffer()
 
 	p := replication.NewBinlogParser()
@@ -26,7 +28,11 @@ func ParseBinlogToMessages(binlogFileName string, tableMap database.TableMap, co
 				glog.Info("Skipping transaction savepoint")
 			} else {
 				glog.Info("Query event")
-				consumer(conversion.ConvertQueryEventToMessage(*e.Header, *queryEvent))
+				err := consumer(conversion.ConvertQueryEventToMessage(*e.Header, *queryEvent))
+
+				if err != nil {
+					return err
+				}
 			}
 
 			break
@@ -38,7 +44,11 @@ func ParseBinlogToMessages(binlogFileName string, tableMap database.TableMap, co
 			glog.Infof("Ending transaction xID %d", xId)
 
 			for _, message := range conversion.ConvertRowsEventsToMessages(xId, rowRowsEventBuffer.Drain()) {
-				consumer(message)
+				err := consumer(message)
+
+				if err != nil {
+					return err
+				}
 			}
 
 			break
@@ -65,7 +75,7 @@ func ParseBinlogToMessages(binlogFileName string, tableMap database.TableMap, co
 			tableMetadata, ok := tableMap.LookupTableMetadata(tableId)
 
 			if ok == false {
-				glog.Errorf("Skipping event - no table found for table id %D", tableId)
+				glog.Errorf("Skipping event - no table found for table id %d", tableId)
 				break
 			}
 

@@ -2,6 +2,7 @@ package parser
 
 import (
 	"testing"
+	"errors"
 	"fmt"
 	"path"
 	"io/ioutil"
@@ -51,16 +52,31 @@ func TestBinlogToMessages(t *testing.T) {
 
 		assertMessages(t, collectedMessages, "fixtures/02.json")
 	})
+
+	t.Run("Consume callback returns error", func(t *testing.T) {
+		tableMap := database.NewTableMap(db)
+
+		consumeMessage := func (m messages.Message) error {
+			return errors.New("Something went wrong")
+		}
+
+		err := ParseBinlogToMessages(prefixDataDir("fixtures/mysql-bin.01"), tableMap, consumeMessage)
+
+		if err == nil {
+			t.Fatal("Expected to get error from consumeMessage")
+		}
+	})
 }
 
 func doParseBinlogToMessages(binlogFileName string, tableMap database.TableMap) ([]messages.Message, error) {
 	var collectedMessages []messages.Message
 
-	consumeMessage := func (m messages.Message) {
+	consumeMessage := func (m messages.Message) error {
 		collectedMessages = append(collectedMessages, m)
+		return nil
 	}
 
-	err := ParseBinlogToMessages(path.Join(test.GetDataDir(), binlogFileName), tableMap, consumeMessage)
+	err := ParseBinlogToMessages(prefixDataDir(binlogFileName), tableMap, consumeMessage)
 
 	if err != nil {
 		return nil, err
@@ -70,7 +86,7 @@ func doParseBinlogToMessages(binlogFileName string, tableMap database.TableMap) 
 }
 
 func assertMessages(t *testing.T, messages []messages.Message, compareAgainstFileName string) {
-	fileContent, err := ioutil.ReadFile(path.Join(test.GetDataDir(), compareAgainstFileName))
+	fileContent, err := ioutil.ReadFile(prefixDataDir(compareAgainstFileName))
 
 	if err != nil {
 		t.Fatal(fmt.Sprintf("Failed to compare against file - failed to get file content from %s", compareAgainstFileName))
@@ -87,4 +103,8 @@ func assertMessages(t *testing.T, messages []messages.Message, compareAgainstFil
 	if string(messagesAsJson) != fileContentTrimmed {
 		t.Fatal(fmt.Sprintf("json does not match when comparing against %s - got\n%s", compareAgainstFileName, messagesAsJson))
 	}
+}
+
+func prefixDataDir(filePath string) string {
+	return path.Join(test.GetDataDir(), filePath)
 }

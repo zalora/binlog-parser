@@ -1,3 +1,5 @@
+package database
+
 import (
 	"testing"
  	"zalora/binlog-parser/parser/test"

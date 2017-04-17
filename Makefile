@@ -5,7 +5,7 @@ all:
 	$(GOCC) install $(SRC_DIR)
 
 deps:
-	git submodule --update --init
+	git submodule update --init
 
 test-setup:
 	mysql -uroot < data/fixtures/test_db.sql

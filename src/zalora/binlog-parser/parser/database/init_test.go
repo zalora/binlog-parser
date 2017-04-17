@@ -2,7 +2,7 @@ package database
 
 import (
 	"testing"
- 	"zalora/binlog-parser/parser/test"
+ 	"zalora/binlog-parser/test"
 )
 
 func TestMain(m *testing.M) {

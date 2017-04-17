@@ -4,7 +4,7 @@ import (
 	"testing"
 	"fmt"
 	"reflect"
- 	"zalora/binlog-parser/parser/test"
+ 	"zalora/binlog-parser/test"
 )
 
 func TestLookupTableMetadata(t *testing.T) {

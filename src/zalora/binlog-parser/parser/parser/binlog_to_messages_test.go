@@ -10,7 +10,7 @@ import (
 	"encoding/json"
  	"zalora/binlog-parser/parser/database"
  	"zalora/binlog-parser/parser/messages"
- 	"zalora/binlog-parser/parser/test"
+ 	"zalora/binlog-parser/test"
 )
 
 func TestBinlogToMessages(t *testing.T) {

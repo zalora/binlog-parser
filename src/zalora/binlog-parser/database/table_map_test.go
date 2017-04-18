@@ -36,7 +36,7 @@ func TestLookupTableMetadata(t *testing.T) {
 			2: "address",
 		}
 
-		if reflect.DeepEqual(tableMetadata.Fields, expectedFields) == false {
+		if !reflect.DeepEqual(tableMetadata.Fields, expectedFields) {
 			t.Fatal("Wrong fields in table metadata")
 		}
 	})

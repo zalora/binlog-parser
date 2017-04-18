@@ -6,12 +6,21 @@ import (
 	"zalora/binlog-parser/parser/messages"
 	"zalora/binlog-parser/database"
 	"github.com/siddontang/go-mysql/replication"
+	"github.com/golang/glog"
 )
 
 type RowsEventData struct {
 	BinlogEventHeader replication.EventHeader
 	BinlogEvent replication.RowsEvent
 	TableMetadata database.TableMetadata
+}
+
+func NewRowsEventData(binlogEventHeader replication.EventHeader, binlogEvent replication.RowsEvent, tableMetadata database.TableMetadata) RowsEventData {
+	return RowsEventData{
+		BinlogEventHeader: binlogEventHeader,
+		BinlogEvent: binlogEvent,
+		TableMetadata: tableMetadata,
+	}
 }
 
 func ConvertQueryEventToMessage(binlogEventHeader replication.EventHeader, binlogEvent replication.QueryEvent) messages.Message {
@@ -34,7 +43,6 @@ func ConvertRowsEventsToMessages(xId uint64, rowsEventsData []RowsEventData) []m
 			xId,
 		)
 
-		// @FIXME warn for not handled event type
 		switch d.BinlogEventHeader.EventType {
 		case replication.WRITE_ROWS_EVENTv2:
 			for _,message := range createInsertMessagesFromRowData(header, rowData) {
@@ -54,6 +62,11 @@ func ConvertRowsEventsToMessages(xId uint64, rowsEventsData []RowsEventData) []m
 			for _,message := range createDeleteMessagesFromRowData(header, rowData) {
 				ret = append(ret, messages.Message(message))
 			}
+
+			break
+
+		default:
+			glog.Errorf("Can't convert unknown event %s", d.BinlogEventHeader.EventType)
 
 			break
 		}
@@ -111,7 +124,7 @@ func rowData(rowsEvent replication.RowsEvent, columnNames map[int]string) []map[
 		for j, d := range rows {
 			columnName, exists := columnNames[j]
 
-			if exists == false {
+			if !exists {
 				columnName = fmt.Sprintf("(unknown_%d)", unknownCount)
 				unknownCount++
 			}

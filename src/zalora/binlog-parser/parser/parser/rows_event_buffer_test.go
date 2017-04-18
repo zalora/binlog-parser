@@ -14,7 +14,7 @@ func TestRowsEventBuffer(t *testing.T) {
 		buffer := NewRowsEventBuffer()
 		buffered := buffer.Drain()
 
-		if (len(buffered) != 0) {
+		if len(buffered) != 0 {
 			t.Fatal("Wrong number of entries retrieved from empty buffer")
 		}
 	})
@@ -26,15 +26,15 @@ func TestRowsEventBuffer(t *testing.T) {
 
 		buffered := buffer.Drain()
 
-		if (len(buffered) != 2) {
+		if len(buffered) != 2 {
 			t.Fatal("Wrong number of entries retrieved from buffer")
 		}
 
-		if (reflect.DeepEqual(buffered[0], eventDataOne) == false) {
+		if !reflect.DeepEqual(buffered[0], eventDataOne) {
 			t.Fatal("Retrieved wrong entry at index 0 from buffer")
 		}
 
-		if (reflect.DeepEqual(buffered[1], eventDataOne) == false) {
+		if !reflect.DeepEqual(buffered[1], eventDataOne) {
 			t.Fatal("Retrieved wrong entry at index 1 from buffer")
 		}
 
@@ -42,11 +42,11 @@ func TestRowsEventBuffer(t *testing.T) {
 
 		buffered = buffer.Drain()
 
-		if (len(buffered) != 1) {
+		if len(buffered) != 1 {
 			t.Fatal("Wrong number of entries retrieved from re-used buffer")
 		}
 
-		if (reflect.DeepEqual(buffered[0], eventDataOne) == false) {
+		if !reflect.DeepEqual(buffered[0], eventDataOne) {
 			t.Fatal("Retrieved wrong entry at index 0 from re-used buffer")
 		}
 	})

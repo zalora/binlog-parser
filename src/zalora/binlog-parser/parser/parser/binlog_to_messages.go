@@ -74,17 +74,13 @@ func ParseBinlogToMessages(binlogFileName string, tableMap database.TableMap, co
 			tableId := uint64(rowsEvent.TableID)
 			tableMetadata, ok := tableMap.LookupTableMetadata(tableId)
 
-			if ok == false {
+			if !ok {
 				glog.Errorf("Skipping event - no table found for table id %d", tableId)
 				break
 			}
 
 			rowRowsEventBuffer.BufferRowsEventData(
-				conversion.RowsEventData{
-					BinlogEventHeader: *e.Header,
-					BinlogEvent: *rowsEvent,
-					TableMetadata: tableMetadata,
-				},
+				conversion.NewRowsEventData(*e.Header, *rowsEvent, tableMetadata),
 			)
 
 			break

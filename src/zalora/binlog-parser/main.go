@@ -124,10 +124,10 @@ func createWatcherParseFunc(outputDir string) watcher.ParseFunc {
 			return false, nil
 
 		default:
-			// some unknown error happened, skip this file
-			glog.Errorf("Skipping file %s because of error %s", binlogFileName, err)
+			// some unknown error happened
+			glog.Errorf("Error while parsing watched file %s", err)
 
-			return true, err
+			return false, err
 		}
 	}
 }

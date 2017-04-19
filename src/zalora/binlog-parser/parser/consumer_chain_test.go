@@ -1,10 +1,10 @@
 package parser
 
 import (
+	"io/ioutil"
+	"os"
 	"testing"
 	"time"
-	"os"
-	"io/ioutil"
 	"zalora/binlog-parser/parser/messages"
 )
 
@@ -124,7 +124,6 @@ func assertJsonOutputNotEmpty(t *testing.T, tmpfile *os.File) {
 		t.Fatal("Failed to dump JSON to file - tmp file is empty")
 	}
 }
-
 
 func assertJsonOutputEmpty(t *testing.T, tmpfile *os.File) {
 	fileContent, err := ioutil.ReadFile(tmpfile.Name())

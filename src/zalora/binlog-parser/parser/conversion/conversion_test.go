@@ -1,13 +1,13 @@
 package conversion
 
 import (
+	"fmt"
+	"github.com/siddontang/go-mysql/replication"
+	"reflect"
 	"testing"
 	"time"
-	"fmt"
-	"reflect"
-	"zalora/binlog-parser/parser/messages"
 	"zalora/binlog-parser/database"
-	"github.com/siddontang/go-mysql/replication"
+	"zalora/binlog-parser/parser/messages"
 )
 
 func TestConvertQueryEventToMessage(t *testing.T) {
@@ -34,7 +34,7 @@ func TestConvertRowsEventsToMessages(t *testing.T) {
 
 	t.Run("Insert message", func(t *testing.T) {
 		eventHeader := createEventHeader(logPos, replication.WRITE_ROWS_EVENTv2)
-		rowsEvent := createRowsEvent([]interface{} {"value_1", "value_2"}, []interface{} {"value_3", "value_4"})
+		rowsEvent := createRowsEvent([]interface{}{"value_1", "value_2"}, []interface{}{"value_3", "value_4"})
 		rowsEventData := []RowsEventData{NewRowsEventData(eventHeader, rowsEvent, tableMetadata)}
 
 		convertedMessages := ConvertRowsEventsToMessages(xId, rowsEventData)
@@ -48,20 +48,20 @@ func TestConvertRowsEventsToMessages(t *testing.T) {
 
 		insertMessageOne := convertedMessages[0].(messages.InsertMessage)
 
-		if !reflect.DeepEqual(insertMessageOne.Data, map[string]interface{} {"field_1": "value_1", "field_2": "value_2"}) {
+		if !reflect.DeepEqual(insertMessageOne.Data, map[string]interface{}{"field_1": "value_1", "field_2": "value_2"}) {
 			t.Fatal(fmt.Sprintf("Wrong data for insert message 1 - got %v", insertMessageOne.Data))
 		}
 
 		insertMessageTwo := convertedMessages[1].(messages.InsertMessage)
 
-		if !reflect.DeepEqual(insertMessageTwo.Data, map[string]interface{} {"field_1": "value_3", "field_2": "value_4"}) {
+		if !reflect.DeepEqual(insertMessageTwo.Data, map[string]interface{}{"field_1": "value_3", "field_2": "value_4"}) {
 			t.Fatal(fmt.Sprintf("Wrong data for insert message 2 - got %v", insertMessageTwo.Data))
 		}
 	})
 
 	t.Run("Delete message", func(t *testing.T) {
 		eventHeader := createEventHeader(logPos, replication.DELETE_ROWS_EVENTv2)
-		rowsEvent := createRowsEvent([]interface{} {"value_1", "value_2"}, []interface{} {"value_3", "value_4"})
+		rowsEvent := createRowsEvent([]interface{}{"value_1", "value_2"}, []interface{}{"value_3", "value_4"})
 		rowsEventData := []RowsEventData{NewRowsEventData(eventHeader, rowsEvent, tableMetadata)}
 
 		convertedMessages := ConvertRowsEventsToMessages(xId, rowsEventData)
@@ -75,20 +75,20 @@ func TestConvertRowsEventsToMessages(t *testing.T) {
 
 		deleteMessageOne := convertedMessages[0].(messages.DeleteMessage)
 
-		if !reflect.DeepEqual(deleteMessageOne.Data, map[string]interface{} {"field_1": "value_1", "field_2": "value_2"}) {
+		if !reflect.DeepEqual(deleteMessageOne.Data, map[string]interface{}{"field_1": "value_1", "field_2": "value_2"}) {
 			t.Fatal(fmt.Sprintf("Wrong data for delete message 1 - got %v", deleteMessageOne.Data))
 		}
 
 		deleteMessageTwo := convertedMessages[1].(messages.DeleteMessage)
 
-		if !reflect.DeepEqual(deleteMessageTwo.Data, map[string]interface{} {"field_1": "value_3", "field_2": "value_4"}) {
+		if !reflect.DeepEqual(deleteMessageTwo.Data, map[string]interface{}{"field_1": "value_3", "field_2": "value_4"}) {
 			t.Fatal(fmt.Sprintf("Wrong data for delete message 2 - got %v", deleteMessageTwo.Data))
 		}
 	})
 
 	t.Run("Update message", func(t *testing.T) {
 		eventHeader := createEventHeader(logPos, replication.UPDATE_ROWS_EVENTv2)
-		rowsEvent := createRowsEvent([]interface{} {"value_1", "value_2"}, []interface{} {"value_3", "value_4"})
+		rowsEvent := createRowsEvent([]interface{}{"value_1", "value_2"}, []interface{}{"value_3", "value_4"})
 		rowsEventData := []RowsEventData{NewRowsEventData(eventHeader, rowsEvent, tableMetadata)}
 
 		convertedMessages := ConvertRowsEventsToMessages(xId, rowsEventData)
@@ -101,11 +101,11 @@ func TestConvertRowsEventsToMessages(t *testing.T) {
 
 		updateMessage := convertedMessages[0].(messages.UpdateMessage)
 
-		if !reflect.DeepEqual(updateMessage.OldData, map[string]interface{} {"field_1": "value_1", "field_2": "value_2"}) {
+		if !reflect.DeepEqual(updateMessage.OldData, map[string]interface{}{"field_1": "value_1", "field_2": "value_2"}) {
 			t.Fatal(fmt.Sprintf("Wrong data for update message old data - got %v", updateMessage.OldData))
 		}
 
-		if !reflect.DeepEqual(updateMessage.NewData, map[string]interface{} {"field_1": "value_3", "field_2": "value_4"}) {
+		if !reflect.DeepEqual(updateMessage.NewData, map[string]interface{}{"field_1": "value_3", "field_2": "value_4"}) {
 			t.Fatal(fmt.Sprintf("Wrong data for update message new data - got %v", updateMessage.NewData))
 		}
 	})
@@ -127,11 +127,11 @@ func createEventHeader(logPos uint32, eventType replication.EventType) replicati
 	return replication.EventHeader{
 		Timestamp: uint32(time.Now().Unix()),
 		EventType: eventType,
-		LogPos: logPos,
+		LogPos:    logPos,
 	}
 }
 
-func createRowsEvent(rowData ... []interface{}) replication.RowsEvent {
+func createRowsEvent(rowData ...[]interface{}) replication.RowsEvent {
 	return replication.RowsEvent{Rows: rowData}
 }
 

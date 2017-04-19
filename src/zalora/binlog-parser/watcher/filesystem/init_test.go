@@ -2,7 +2,7 @@ package filesystem
 
 import (
 	"testing"
- 	"zalora/binlog-parser/test"
+	"zalora/binlog-parser/test"
 )
 
 func TestMain(m *testing.M) {

@@ -33,7 +33,7 @@ func (c *ConsumerChain) CollectAsJsonInFile(f *os.File) {
 }
 
 func (c *ConsumerChain) consumeMessage(message messages.Message) error {
-	for _,predicate := range c.predicates {
+	for _, predicate := range c.predicates {
 		pass := predicate(message)
 
 		if !pass {
@@ -41,7 +41,7 @@ func (c *ConsumerChain) consumeMessage(message messages.Message) error {
 		}
 	}
 
-	for _,collector := range c.collectors {
+	for _, collector := range c.collectors {
 		collector_err := collector(message)
 
 		if collector_err != nil {
@@ -95,11 +95,11 @@ func jsonFileCollector(f *os.File) collector {
 }
 
 func contains(s []string, e string) bool {
-    for _, a := range s {
-        if a == e {
-            return true
-        }
-    }
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
 
-    return false
+	return false
 }

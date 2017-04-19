@@ -1,12 +1,12 @@
 package index
 
 import (
-	"testing"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
- 	"zalora/binlog-parser/test"
+	"testing"
+	"zalora/binlog-parser/test"
 )
 
 func TestIndex(t *testing.T) {
@@ -38,7 +38,7 @@ func TestIndex(t *testing.T) {
 		}
 	})
 
-	t.Run("Diff", func (t *testing.T) {
+	t.Run("Diff", func(t *testing.T) {
 		indexMasterFile, _ := os.Open(path.Join(test.GetDataDir(), "fixtures/mysql-index-file.02"))
 		indexMaster := NewIndex(indexMasterFile)
 

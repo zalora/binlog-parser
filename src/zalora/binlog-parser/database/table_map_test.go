@@ -1,10 +1,10 @@
 package database
 
 import (
-	"testing"
 	"fmt"
 	"reflect"
- 	"zalora/binlog-parser/test"
+	"testing"
+	"zalora/binlog-parser/test"
 )
 
 func TestLookupTableMetadata(t *testing.T) {
@@ -30,7 +30,7 @@ func TestLookupTableMetadata(t *testing.T) {
 			t.Fatal("Expected table metadata to be found")
 		}
 
-		expectedFields := map[int]string {
+		expectedFields := map[int]string{
 			0: "building_no",
 			1: "building_name",
 			2: "address",

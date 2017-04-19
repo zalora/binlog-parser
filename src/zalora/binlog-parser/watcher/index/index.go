@@ -2,15 +2,15 @@ package index
 
 import (
 	"bufio"
-	"strings"
-	"io/ioutil"
 	"fmt"
-	"os"
 	"github.com/golang/glog"
+	"io/ioutil"
+	"os"
+	"strings"
 )
 
 type Index struct {
-	lines []string
+	lines    []string
 	filename string
 }
 

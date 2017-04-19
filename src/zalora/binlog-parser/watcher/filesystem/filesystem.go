@@ -1,8 +1,8 @@
 package filesystem
 
 import (
-	"github.com/golang/glog"
 	"github.com/fsnotify/fsnotify"
+	"github.com/golang/glog"
 )
 
 type WatcherFunc func() error

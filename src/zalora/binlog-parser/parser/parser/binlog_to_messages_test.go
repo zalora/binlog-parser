@@ -1,16 +1,16 @@
 package parser
 
 import (
-	"testing"
+	"encoding/json"
 	"errors"
 	"fmt"
-	"path"
 	"io/ioutil"
+	"path"
 	"strings"
-	"encoding/json"
- 	"zalora/binlog-parser/database"
- 	"zalora/binlog-parser/parser/messages"
- 	"zalora/binlog-parser/test"
+	"testing"
+	"zalora/binlog-parser/database"
+	"zalora/binlog-parser/parser/messages"
+	"zalora/binlog-parser/test"
 )
 
 func TestBinlogToMessages(t *testing.T) {
@@ -56,7 +56,7 @@ func TestBinlogToMessages(t *testing.T) {
 	t.Run("Consume callback returns error", func(t *testing.T) {
 		tableMap := database.NewTableMap(db)
 
-		consumeMessage := func (m messages.Message) error {
+		consumeMessage := func(m messages.Message) error {
 			return errors.New("Something went wrong")
 		}
 
@@ -71,7 +71,7 @@ func TestBinlogToMessages(t *testing.T) {
 func doParseBinlogToMessages(binlogFileName string, tableMap database.TableMap) ([]messages.Message, error) {
 	var collectedMessages []messages.Message
 
-	consumeMessage := func (m messages.Message) error {
+	consumeMessage := func(m messages.Message) error {
 		collectedMessages = append(collectedMessages, m)
 		return nil
 	}

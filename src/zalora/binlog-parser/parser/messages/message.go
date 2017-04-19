@@ -10,50 +10,50 @@ const (
 	MESSAGE_TYPE_INSERT MessageType = "Insert"
 	MESSAGE_TYPE_UPDATE MessageType = "Update"
 	MESSAGE_TYPE_DELETE MessageType = "Delete"
-	MESSAGE_TYPE_QUERY MessageType = "Query"
+	MESSAGE_TYPE_QUERY  MessageType = "Query"
 )
 
 type MessageHeader struct {
-	Schema string
-	Table string
+	Schema            string
+	Table             string
 	BinlogMessageTime string
-	BinlogPosition uint32
-	XId uint64
+	BinlogPosition    uint32
+	XId               uint64
 }
 
 func NewMessageHeader(schema string, table string, binlogMessageTime time.Time, binlogPosition uint32, xId uint64) MessageHeader {
-	return MessageHeader {
-		Schema: schema,
-		Table: table,
+	return MessageHeader{
+		Schema:            schema,
+		Table:             table,
 		BinlogMessageTime: binlogMessageTime.UTC().Format(time.RFC3339),
-		BinlogPosition: binlogPosition,
-		XId: xId,
+		BinlogPosition:    binlogPosition,
+		XId:               xId,
 	}
 }
 
 func NewMinimalMessageHeader(binlogMessageTime time.Time, binlogPosition uint32) MessageHeader {
-	return MessageHeader {
+	return MessageHeader{
 		BinlogMessageTime: binlogMessageTime.UTC().Format(time.RFC3339),
-		BinlogPosition: binlogPosition,
+		BinlogPosition:    binlogPosition,
 	}
 }
 
 type Message interface {
-    GetHeader() MessageHeader
-    GetType() MessageType
+	GetHeader() MessageHeader
+	GetType() MessageType
 }
 
 type baseMessage struct {
-    Header MessageHeader
-    Type MessageType
+	Header MessageHeader
+	Type   MessageType
 }
 
 func (b baseMessage) GetHeader() MessageHeader {
-    return b.Header
+	return b.Header
 }
 
 func (b baseMessage) GetType() MessageType {
-    return b.Type
+	return b.Type
 }
 
 type SqlQuery string

@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"testing"
 	"reflect"
+	"testing"
 	"zalora/binlog-parser/parser/conversion"
 )
 

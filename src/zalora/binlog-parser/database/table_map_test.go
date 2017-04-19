@@ -8,7 +8,7 @@ import (
 )
 
 func TestLookupTableMetadata(t *testing.T) {
-	db := GetDatabaseInstance(test.TEST_DB_CONNECTION_STRING)
+	db, _ := GetDatabaseInstance(test.TEST_DB_CONNECTION_STRING)
 	defer db.Close()
 
 	t.Run("Found", func(t *testing.T) {

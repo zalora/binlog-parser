@@ -1,12 +1,12 @@
 package parser
 
 import (
-	"strings"
-	"zalora/binlog-parser/parser/messages"
-	"zalora/binlog-parser/parser/conversion"
-	"zalora/binlog-parser/database"
-	"github.com/siddontang/go-mysql/replication"
 	"github.com/golang/glog"
+	"github.com/siddontang/go-mysql/replication"
+	"strings"
+	"zalora/binlog-parser/database"
+	"zalora/binlog-parser/parser/conversion"
+	"zalora/binlog-parser/parser/messages"
 )
 
 type ConsumerFunc func(messages.Message) error
@@ -60,7 +60,12 @@ func ParseBinlogToMessages(binlogFileName string, tableMap database.TableMap, co
 			table := string(tableMapEvent.Table)
 			tableId := uint64(tableMapEvent.TableID)
 
-			tableMap.Add(tableId, schema, table)
+			err := tableMap.Add(tableId, schema, table)
+
+			if err != nil {
+				glog.Errorf("Failed to add table information for table %s.%s (id %d)", schema, table, tableId)
+				return err
+			}
 
 			break
 
@@ -68,7 +73,7 @@ func ParseBinlogToMessages(binlogFileName string, tableMap database.TableMap, co
 			fallthrough
 		case replication.UPDATE_ROWS_EVENTv2:
 			fallthrough
- 		case replication.DELETE_ROWS_EVENTv2:
+		case replication.DELETE_ROWS_EVENTv2:
 			rowsEvent := e.Event.(*replication.RowsEvent)
 
 			tableId := uint64(rowsEvent.TableID)

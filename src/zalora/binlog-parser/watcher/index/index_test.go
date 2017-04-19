@@ -9,24 +9,13 @@ import (
  	"zalora/binlog-parser/test"
 )
 
-func TestFileNotFound(t *testing.T) {
-	_, err := NewIndex("/not/there")
-
-	if err == nil {
-		t.Fatal("Expected error when trying to create index from non-existing file")
-	}
-}
-
 func TestIndex(t *testing.T) {
 	t.Run("Append and Sync", func(t *testing.T) {
 		tmpfile, _ := ioutil.TempFile("", "test")
 		defer os.Remove(tmpfile.Name())
 
-		index, err := NewIndex(path.Join(test.GetDataDir(), "fixtures/mysql-index-file.01"))
-
-		if err != nil {
-			t.Fatal("Got error when creating index")
-		}
+		indexFile, _ := os.Open(path.Join(test.GetDataDir(), "fixtures/mysql-index-file.01"))
+		index := NewIndex(indexFile)
 
 		index.Append("/tmp/mysql-bin.88888")
 		index.Append("/tmp/mysql-bin.99999")
@@ -36,17 +25,11 @@ func TestIndex(t *testing.T) {
 	})
 
 	t.Run("Diff same files", func(t *testing.T) {
-		indexOne, err := NewIndex(path.Join(test.GetDataDir(), "fixtures/mysql-index-file.01"))
+		indexOneFile, _ := os.Open(path.Join(test.GetDataDir(), "fixtures/mysql-index-file.01"))
+		indexOne := NewIndex(indexOneFile)
 
-		if err != nil {
-			t.Fatal("Got error when creating index")
-		}
-
-		indexTwo, err := NewIndex(path.Join(test.GetDataDir(), "fixtures/mysql-index-file.01"))
-
-		if err != nil {
-			t.Fatal("Got error when creating index")
-		}
+		indexTwoFile, _ := os.Open(path.Join(test.GetDataDir(), "fixtures/mysql-index-file.01"))
+		indexTwo := NewIndex(indexTwoFile)
 
 		diffedLines := indexOne.Diff(indexTwo)
 
@@ -56,17 +39,11 @@ func TestIndex(t *testing.T) {
 	})
 
 	t.Run("Diff", func (t *testing.T) {
-		indexMaster, err := NewIndex(path.Join(test.GetDataDir(), "fixtures/mysql-index-file.02"))
+		indexMasterFile, _ := os.Open(path.Join(test.GetDataDir(), "fixtures/mysql-index-file.02"))
+		indexMaster := NewIndex(indexMasterFile)
 
-		if err != nil {
-			t.Fatal("Got error when creating index")
-		}
-
-		indexToBeDiffed, err := NewIndex(path.Join(test.GetDataDir(), "fixtures/mysql-index-file.01"))
-
-		if err != nil {
-			t.Fatal("Got error when creating index")
-		}
+		indexToBeDiffedFile, _ := os.Open(path.Join(test.GetDataDir(), "fixtures/mysql-index-file.01"))
+		indexToBeDiffed := NewIndex(indexToBeDiffedFile)
 
 		diffedLines := indexMaster.Diff(indexToBeDiffed)
 

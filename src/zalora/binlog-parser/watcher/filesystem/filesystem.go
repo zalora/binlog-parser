@@ -1,14 +1,13 @@
 package filesystem
 
 import (
-
 	"github.com/golang/glog"
 	"github.com/fsnotify/fsnotify"
 )
 
-type WatcherFunc func(err error) bool
+type WatcherFunc func() error
 
-func WatchFileChanges(filename string, watcherFunc WatcherFunc) {
+func WatchDirChanges(dirname string, watcherFunc WatcherFunc) error {
 	watcher, err := fsnotify.NewWatcher()
 
 	if err != nil {
@@ -16,6 +15,14 @@ func WatchFileChanges(filename string, watcherFunc WatcherFunc) {
 	}
 
 	defer watcher.Close()
+
+	// call func at least once when attaching
+	err = watcherFunc()
+
+	if err != nil {
+		glog.Errorf("Got error calling watcher func initially %s", err)
+		return err
+	}
 
 	done := make(chan bool)
 
@@ -25,30 +32,28 @@ func WatchFileChanges(filename string, watcherFunc WatcherFunc) {
 			case event := <-watcher.Events:
 				glog.Infof("inotify event %s", event)
 
-				if event.Op&fsnotify.Write == fsnotify.Write {
-					glog.Infof("modified file %s, calling watcher func", event.Name)
+				watcherErr := watcherFunc()
 
-					if !watcherFunc(nil) {
-						close(done)
-					}
+				if watcherErr != nil {
+					done <- true
 				}
 
 			case err := <-watcher.Errors:
-				glog.Errorf("Got error watching %s, calling watcher func", err)
+				glog.Errorf("Got error %s while watching, calling watcher func", err)
 
-				if !watcherFunc(err) {
-					close(done)
-				}
+				done <- true
 			}
 		}
 	}()
 
-	glog.Infof("Start watching file %s", filename)
+	glog.Infof("Start watching dir %s", dirname)
 
-	err = watcher.Add(filename)
+	err = watcher.Add(dirname)
 
 	if err != nil {
 		glog.Errorf("Got error adding watcher %s", err)
+		return err
 	}
 	<-done
+	return nil
 }

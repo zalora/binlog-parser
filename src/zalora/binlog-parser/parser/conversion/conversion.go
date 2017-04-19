@@ -1,25 +1,25 @@
 package conversion
 
 import (
-	"time"
 	"fmt"
-	"zalora/binlog-parser/parser/messages"
-	"zalora/binlog-parser/database"
-	"github.com/siddontang/go-mysql/replication"
 	"github.com/golang/glog"
+	"github.com/siddontang/go-mysql/replication"
+	"time"
+	"zalora/binlog-parser/database"
+	"zalora/binlog-parser/parser/messages"
 )
 
 type RowsEventData struct {
 	BinlogEventHeader replication.EventHeader
-	BinlogEvent replication.RowsEvent
-	TableMetadata database.TableMetadata
+	BinlogEvent       replication.RowsEvent
+	TableMetadata     database.TableMetadata
 }
 
 func NewRowsEventData(binlogEventHeader replication.EventHeader, binlogEvent replication.RowsEvent, tableMetadata database.TableMetadata) RowsEventData {
 	return RowsEventData{
 		BinlogEventHeader: binlogEventHeader,
-		BinlogEvent: binlogEvent,
-		TableMetadata: tableMetadata,
+		BinlogEvent:       binlogEvent,
+		TableMetadata:     tableMetadata,
 	}
 }
 
@@ -32,7 +32,7 @@ func ConvertQueryEventToMessage(binlogEventHeader replication.EventHeader, binlo
 func ConvertRowsEventsToMessages(xId uint64, rowsEventsData []RowsEventData) []messages.Message {
 	var ret []messages.Message
 
-	for _,d := range rowsEventsData {
+	for _, d := range rowsEventsData {
 		rowData := rowData(d.BinlogEvent, d.TableMetadata.Fields)
 
 		header := messages.NewMessageHeader(
@@ -45,21 +45,21 @@ func ConvertRowsEventsToMessages(xId uint64, rowsEventsData []RowsEventData) []m
 
 		switch d.BinlogEventHeader.EventType {
 		case replication.WRITE_ROWS_EVENTv2:
-			for _,message := range createInsertMessagesFromRowData(header, rowData) {
+			for _, message := range createInsertMessagesFromRowData(header, rowData) {
 				ret = append(ret, messages.Message(message))
 			}
 
 			break
 
 		case replication.UPDATE_ROWS_EVENTv2:
-			for _,message := range createUpdateMessagesFromRowData(header, rowData) {
+			for _, message := range createUpdateMessagesFromRowData(header, rowData) {
 				ret = append(ret, messages.Message(message))
 			}
 
 			break
 
- 		case replication.DELETE_ROWS_EVENTv2:
-			for _,message := range createDeleteMessagesFromRowData(header, rowData) {
+		case replication.DELETE_ROWS_EVENTv2:
+			for _, message := range createDeleteMessagesFromRowData(header, rowData) {
 				ret = append(ret, messages.Message(message))
 			}
 
@@ -76,15 +76,15 @@ func ConvertRowsEventsToMessages(xId uint64, rowsEventsData []RowsEventData) []m
 }
 
 func createUpdateMessagesFromRowData(header messages.MessageHeader, rowData []map[string]interface{}) []messages.UpdateMessage {
-	if len(rowData) % 2 != 0 {
-		panic("update rows should be old/new pairs") // @FIXME that's pretty nasty
+	if len(rowData)%2 != 0 {
+		panic("update rows should be old/new pairs") // should never happen as per mysql format
 	}
 
 	var ret []messages.UpdateMessage
 	var tmp map[string]interface{}
 
-	for index,data := range rowData {
-		if index % 2 == 0 {
+	for index, data := range rowData {
+		if index%2 == 0 {
 			tmp = data
 		} else {
 			ret = append(ret, messages.NewUpdateMessage(header, tmp, data))
@@ -97,7 +97,7 @@ func createUpdateMessagesFromRowData(header messages.MessageHeader, rowData []ma
 func createInsertMessagesFromRowData(header messages.MessageHeader, rowData []map[string]interface{}) []messages.InsertMessage {
 	var ret []messages.InsertMessage
 
-	for _,data := range rowData {
+	for _, data := range rowData {
 		ret = append(ret, messages.NewInsertMessage(header, data))
 	}
 
@@ -107,7 +107,7 @@ func createInsertMessagesFromRowData(header messages.MessageHeader, rowData []ma
 func createDeleteMessagesFromRowData(header messages.MessageHeader, rowData []map[string]interface{}) []messages.DeleteMessage {
 	var ret []messages.DeleteMessage
 
-	for _,data := range rowData {
+	for _, data := range rowData {
 		ret = append(ret, messages.NewDeleteMessage(header, data))
 	}
 
@@ -119,7 +119,7 @@ func rowData(rowsEvent replication.RowsEvent, columnNames map[int]string) []map[
 
 	for _, rows := range rowsEvent.Rows {
 		data := make(map[string]interface{})
-		unknownCount := 0;
+		unknownCount := 0
 
 		for j, d := range rows {
 			columnName, exists := columnNames[j]

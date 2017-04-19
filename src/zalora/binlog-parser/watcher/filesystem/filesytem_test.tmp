@@ -1,0 +1,28 @@
+package filesystem
+
+import (
+	"io/ioutil"
+	"os"
+	// "time"
+	"testing"
+)
+
+func TestStuff(t *testing.T) {
+	tmpfile, err := ioutil.TempFile("", "test")
+
+	if err != nil {
+		t.Fatal("Failed to create tmp file")
+	}
+
+	defer os.Remove(tmpfile.Name())
+
+	watcherFunc := func (err error) bool {
+		t.Log("##### Hallo Welt")
+		return false
+	}
+
+	WatchFileChanges(tmpfile.Name(), watcherFunc)
+
+	d1 := []byte("hello\ngo\n")
+	ioutil.WriteFile(tmpfile.Name(), d1, 0644)
+}

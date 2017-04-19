@@ -8,7 +8,7 @@ import (
 	"zalora/binlog-parser/parser/messages"
 )
 
-func TestMessagesConsumerChain(t *testing.T) {
+func TestConsumerChain(t *testing.T) {
 	messageMinimal := messages.NewQueryMessage(
 		messages.NewMinimalMessageHeader(time.Now(), 100),
 		messages.SqlQuery("SELECT * FROM table"),
@@ -20,7 +20,7 @@ func TestMessagesConsumerChain(t *testing.T) {
 	)
 
 	t.Run("No predicates, no collectors", func(t *testing.T) {
-		chain := NewMessagesConsumerChain()
+		chain := NewConsumerChain()
 		err := chain.consumeMessage(messageMinimal)
 
 		if err != nil {
@@ -32,7 +32,7 @@ func TestMessagesConsumerChain(t *testing.T) {
 		tmpfile, _ := ioutil.TempFile("", "messages.json")
 		defer os.Remove(tmpfile.Name())
 
-		chain := NewMessagesConsumerChain()
+		chain := NewConsumerChain()
 		chain.CollectAsJsonInFile(tmpfile)
 
 		err := chain.consumeMessage(messageMinimal)
@@ -48,7 +48,7 @@ func TestMessagesConsumerChain(t *testing.T) {
 		tmpfile, _ := ioutil.TempFile("", "messages.json")
 		defer os.Remove(tmpfile.Name())
 
-		chain := NewMessagesConsumerChain()
+		chain := NewConsumerChain()
 		chain.IncludeSchemas("some_db", "database_name")
 		chain.CollectAsJsonInFile(tmpfile)
 
@@ -65,7 +65,7 @@ func TestMessagesConsumerChain(t *testing.T) {
 		tmpfile, _ := ioutil.TempFile("", "messages.json")
 		defer os.Remove(tmpfile.Name())
 
-		chain := NewMessagesConsumerChain()
+		chain := NewConsumerChain()
 		chain.IncludeSchemas("some_db")
 		chain.CollectAsJsonInFile(tmpfile)
 
@@ -82,7 +82,7 @@ func TestMessagesConsumerChain(t *testing.T) {
 		tmpfile, _ := ioutil.TempFile("", "messages.json")
 		defer os.Remove(tmpfile.Name())
 
-		chain := NewMessagesConsumerChain()
+		chain := NewConsumerChain()
 		chain.IncludeTables("some_table", "table_name")
 		chain.CollectAsJsonInFile(tmpfile)
 
@@ -99,7 +99,7 @@ func TestMessagesConsumerChain(t *testing.T) {
 		tmpfile, _ := ioutil.TempFile("", "messages.json")
 		defer os.Remove(tmpfile.Name())
 
-		chain := NewMessagesConsumerChain()
+		chain := NewConsumerChain()
 		chain.IncludeTables("some_table")
 		chain.CollectAsJsonInFile(tmpfile)
 

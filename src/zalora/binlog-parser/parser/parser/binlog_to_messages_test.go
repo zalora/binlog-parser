@@ -14,7 +14,7 @@ import (
 )
 
 func TestBinlogToMessages(t *testing.T) {
-	db := database.GetDatabaseInstance(test.TEST_DB_CONNECTION_STRING)
+	db, _ := database.GetDatabaseInstance(test.TEST_DB_CONNECTION_STRING)
 	defer db.Close()
 
 	t.Run("Binlog file not found", func(t *testing.T) {

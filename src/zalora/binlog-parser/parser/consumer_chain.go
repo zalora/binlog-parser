@@ -7,7 +7,7 @@ import (
 	"zalora/binlog-parser/parser/messages"
 )
 
-type MessagesConsumerChain struct {
+type ConsumerChain struct {
 	predicates []predicate
 	collectors []collector
 }
@@ -16,23 +16,23 @@ type predicate func(message messages.Message) bool
 
 type collector func(message messages.Message) error
 
-func NewMessagesConsumerChain() MessagesConsumerChain {
-	return MessagesConsumerChain{}
+func NewConsumerChain() ConsumerChain {
+	return ConsumerChain{}
 }
 
-func (c *MessagesConsumerChain) IncludeTables(tables ...string) {
+func (c *ConsumerChain) IncludeTables(tables ...string) {
 	c.predicates = append(c.predicates, tablesPredicate(tables...))
 }
 
-func (c *MessagesConsumerChain) IncludeSchemas(schemas ...string) {
+func (c *ConsumerChain) IncludeSchemas(schemas ...string) {
 	c.predicates = append(c.predicates, schemaPredicate(schemas...))
 }
 
-func (c *MessagesConsumerChain) CollectAsJsonInFile(f *os.File) {
+func (c *ConsumerChain) CollectAsJsonInFile(f *os.File) {
 	c.collectors = append(c.collectors, jsonFileCollector(f))
 }
 
-func (c *MessagesConsumerChain) consumeMessage(message messages.Message) error {
+func (c *ConsumerChain) consumeMessage(message messages.Message) error {
 	for _,predicate := range c.predicates {
 		pass := predicate(message)
 
@@ -88,7 +88,7 @@ func jsonFileCollector(f *os.File) collector {
 			return err
 		}
 
-		glog.Infof("Wrote %d bytes to file", n)
+		glog.Infof("Wrote %d bytes to file %s", n, f.Name())
 
 		return nil
 	}

@@ -5,18 +5,20 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func GetDatabaseInstance(connectionString string) *sql.DB {
-	db, db_err := sql.Open("mysql", connectionString)
+func GetDatabaseInstance(connectionString string) (*sql.DB, error) {
+	db, err := sql.Open("mysql", connectionString)
 
-	if db_err != nil {
-		panic(db_err.Error())
+	if err != nil {
+		c := newConnectionError(err)
+		return nil, &c
 	}
 
-	db_err = db.Ping()
+	err = db.Ping()
 
-	if db_err != nil {
-		panic(db_err.Error())
+	if err != nil {
+		c := newConnectionError(err)
+		return nil, &c
 	}
 
-	return db
+	return db, nil
 }

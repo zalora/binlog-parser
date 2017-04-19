@@ -1,11 +1,12 @@
 package index
 
 import (
-	"os"
 	"bufio"
 	"strings"
 	"io/ioutil"
 	"fmt"
+	"os"
+	"github.com/golang/glog"
 )
 
 type Index struct {
@@ -13,15 +14,7 @@ type Index struct {
 	filename string
 }
 
-func NewIndex(filename string) (Index, error) {
-	file, err := os.Open(filename)
-
-	if err != nil {
-		return Index{}, err
-	}
-
-	defer file.Close()
-
+func NewIndex(file *os.File) Index {
 	scanner := bufio.NewScanner(file)
 	var lines []string
 
@@ -29,7 +22,7 @@ func NewIndex(filename string) (Index, error) {
 		lines = append(lines, scanner.Text())
 	}
 
-	return Index{lines: lines, filename: filename}, nil
+	return Index{lines: lines, filename: file.Name()}
 }
 
 func (i *Index) Append(line string) {
@@ -48,6 +41,8 @@ func (i *Index) SyncFile(filename string) error {
 func (i *Index) Diff(other Index) []string {
 	var diff []string
 
+	glog.Infof("Starting diff: %v vs %v", i.lines, other.lines)
+
 	for _, line := range i.lines {
 		found := false
 		for _, other_line := range other.lines {
@@ -63,32 +58,4 @@ func (i *Index) Diff(other Index) []string {
 	}
 
 	return diff
-}
-
-func difference(slice1 []string, slice2 []string) []string {
-    var diff []string
-
-    // Loop two times, first to find slice1 strings not in slice2,
-    // second loop to find slice2 strings not in slice1
-    for i := 0; i < 2; i++ {
-        for _, s1 := range slice1 {
-            found := false
-            for _, s2 := range slice2 {
-                if s1 == s2 {
-                    found = true
-                    break
-                }
-            }
-            // String not found. We add it to return slice
-            if !found {
-                diff = append(diff, s1)
-            }
-        }
-        // Swap the slices, only if it was the first loop
-        if i == 0 {
-            slice1, slice2 = slice2, slice1
-        }
-    }
-
-    return diff
 }

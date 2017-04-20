@@ -23,11 +23,11 @@ func ParseBinlogToMessages(binlogFileName string, tableMap database.TableMap, co
 			query := string(queryEvent.Query)
 
 			if strings.ToUpper(strings.Trim(query, " ")) == "BEGIN" {
-				glog.Info("Starting transaction")
+				glog.V(3).Info("Starting transaction")
 			} else if strings.HasPrefix(strings.ToUpper(strings.Trim(query, " ")), "SAVEPOINT") {
-				glog.Info("Skipping transaction savepoint")
+				glog.V(3).Info("Skipping transaction savepoint")
 			} else {
-				glog.Info("Query event")
+				glog.V(3).Info("Query event")
 				err := consumer(conversion.ConvertQueryEventToMessage(*e.Header, *queryEvent))
 
 				if err != nil {
@@ -41,7 +41,7 @@ func ParseBinlogToMessages(binlogFileName string, tableMap database.TableMap, co
 			xidEvent := e.Event.(*replication.XIDEvent)
 			xId := uint64(xidEvent.XID)
 
-			glog.Infof("Ending transaction xID %d", xId)
+			glog.V(3).Infof("Ending transaction xID %d", xId)
 
 			for _, message := range conversion.ConvertRowsEventsToMessages(xId, rowRowsEventBuffer.Drain()) {
 				err := consumer(message)

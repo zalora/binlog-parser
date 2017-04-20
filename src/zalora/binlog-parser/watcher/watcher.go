@@ -22,7 +22,7 @@ func createWatchFunc(binlogIndexFilename string, watcherIndexFilename string, pa
 	return func() error {
 		fileMutex.Lock()
 		defer fileMutex.Unlock()
-		glog.Info("binlog dir changed")
+		glog.V(1).Info("binlog dir changed")
 
 		watcherIndexFile, err := os.OpenFile(watcherIndexFilename, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
 
@@ -47,7 +47,7 @@ func createWatchFunc(binlogIndexFilename string, watcherIndexFilename string, pa
 		filesToParse := binlogIndex.Diff(watcherIndex)
 
 		if len(filesToParse) <= 1 {
-			glog.Info("No binlogs to parse")
+			glog.V(1).Info("No binlogs to parse")
 			return nil
 		}
 
@@ -69,22 +69,22 @@ func createWatchFunc(binlogIndexFilename string, watcherIndexFilename string, pa
 }
 
 func parseFiles(filesToParse []string, parseFunc ParseFunc) ([]string, error) {
-	glog.Infof("Diff result: %v", filesToParse)
+	glog.V(1).Infof("Diff result: %v", filesToParse)
 
 	var parsedFiles []string
 
 	for _, line := range filesToParse[:len(filesToParse)-1] { // skip newest
-		glog.Infof("Need to parse binlog %s", line)
+		glog.V(1).Infof("Need to parse binlog %s", line)
 
 		err := parseFunc(line)
 
 		if err != nil {
-			glog.Infof("Failed to parse binlog %s", line)
+			glog.V(1).Infof("Failed to parse binlog %s", line)
 
 			return nil, err
 		}
 
-		glog.Infof("Successfully parsed binlog %s", line)
+		glog.V(1).Infof("Successfully parsed binlog %s", line)
 
 		parsedFiles = append(parsedFiles, line)
 	}

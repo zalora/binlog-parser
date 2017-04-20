@@ -88,7 +88,7 @@ func jsonFileCollector(f *os.File) collector {
 			return err
 		}
 
-		glog.Infof("Wrote %d bytes to file %s", n, f.Name())
+		glog.V(1).Infof("Wrote %d bytes to file %s", n, f.Name())
 
 		return nil
 	}

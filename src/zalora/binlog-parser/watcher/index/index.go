@@ -41,7 +41,7 @@ func (i *Index) SyncFile(filename string) error {
 func (i *Index) Diff(other Index) []string {
 	var diff []string
 
-	glog.Infof("Starting diff: %v vs %v", i.lines, other.lines)
+	glog.V(1).Infof("Starting diff: %v vs %v", i.lines, other.lines)
 
 	for _, line := range i.lines {
 		found := false

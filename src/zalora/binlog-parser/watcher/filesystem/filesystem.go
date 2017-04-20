@@ -30,7 +30,7 @@ func WatchDirChanges(dirname string, watcherFunc WatcherFunc) error {
 		for {
 			select {
 			case event := <-watcher.Events:
-				glog.Infof("inotify event %s", event)
+				glog.V(2).Infof("inotify event %s", event)
 
 				watcherErr := watcherFunc()
 
@@ -46,7 +46,7 @@ func WatchDirChanges(dirname string, watcherFunc WatcherFunc) error {
 		}
 	}()
 
-	glog.Infof("Start watching dir %s", dirname)
+	glog.V(1).Infof("Start watching dir %s", dirname)
 
 	err = watcher.Add(dirname)
 

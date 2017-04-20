@@ -2,6 +2,7 @@ package parser
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/golang/glog"
 	"os"
 	"zalora/binlog-parser/parser/messages"
@@ -28,8 +29,8 @@ func (c *ConsumerChain) IncludeSchemas(schemas ...string) {
 	c.predicates = append(c.predicates, schemaPredicate(schemas...))
 }
 
-func (c *ConsumerChain) CollectAsJsonInFile(f *os.File) {
-	c.collectors = append(c.collectors, jsonFileCollector(f))
+func (c *ConsumerChain) CollectAsJsonInFile(f *os.File, prettyPrint bool) {
+	c.collectors = append(c.collectors, jsonFileCollector(f, prettyPrint))
 }
 
 func (c *ConsumerChain) consumeMessage(message messages.Message) error {
@@ -72,16 +73,16 @@ func tablesPredicate(tables ...string) predicate {
 	}
 }
 
-func jsonFileCollector(f *os.File) collector {
+func jsonFileCollector(f *os.File, prettyPrint bool) collector {
 	return func(message messages.Message) error {
-		json, err := json.MarshalIndent(message, "", "    ")
+		json, err := marshalMessage(message, prettyPrint)
 
 		if err != nil {
 			glog.Errorf("Failed to convert message to JSON: %s", err)
 			return err
 		}
 
-		n, err := f.Write(json)
+		n, err := f.WriteString(fmt.Sprintf("%s\n", json))
 
 		if err != nil {
 			glog.Errorf("Failed to write message JSON to file %s", err)
@@ -92,6 +93,14 @@ func jsonFileCollector(f *os.File) collector {
 
 		return nil
 	}
+}
+
+func marshalMessage(message messages.Message, prettyPrint bool) ([]byte, error) {
+	if prettyPrint {
+		return json.MarshalIndent(message, "", "    ")
+	}
+
+	return json.Marshal(message)
 }
 
 func contains(s []string, e string) bool {

@@ -1,3 +1,5 @@
+// +build unit
+
 package parser
 
 import (
@@ -33,7 +35,7 @@ func TestConsumerChain(t *testing.T) {
 		defer os.Remove(tmpfile.Name())
 
 		chain := NewConsumerChain()
-		chain.CollectAsJsonInFile(tmpfile)
+		chain.CollectAsJsonInFile(tmpfile, false)
 
 		err := chain.consumeMessage(messageMinimal)
 
@@ -50,7 +52,7 @@ func TestConsumerChain(t *testing.T) {
 
 		chain := NewConsumerChain()
 		chain.IncludeSchemas("some_db", "database_name")
-		chain.CollectAsJsonInFile(tmpfile)
+		chain.CollectAsJsonInFile(tmpfile, false)
 
 		err := chain.consumeMessage(messageOne)
 
@@ -67,7 +69,7 @@ func TestConsumerChain(t *testing.T) {
 
 		chain := NewConsumerChain()
 		chain.IncludeSchemas("some_db")
-		chain.CollectAsJsonInFile(tmpfile)
+		chain.CollectAsJsonInFile(tmpfile, false)
 
 		err := chain.consumeMessage(messageOne)
 
@@ -84,7 +86,7 @@ func TestConsumerChain(t *testing.T) {
 
 		chain := NewConsumerChain()
 		chain.IncludeTables("some_table", "table_name")
-		chain.CollectAsJsonInFile(tmpfile)
+		chain.CollectAsJsonInFile(tmpfile, false)
 
 		err := chain.consumeMessage(messageOne)
 
@@ -101,7 +103,7 @@ func TestConsumerChain(t *testing.T) {
 
 		chain := NewConsumerChain()
 		chain.IncludeTables("some_table")
-		chain.CollectAsJsonInFile(tmpfile)
+		chain.CollectAsJsonInFile(tmpfile, false)
 
 		err := chain.consumeMessage(messageOne)
 

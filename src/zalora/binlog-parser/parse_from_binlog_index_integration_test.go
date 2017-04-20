@@ -20,8 +20,6 @@ func TestParseFromBinlogIndex(t *testing.T) {
 	binlogFilenameTwo := filepath.Join(dataDir, "fixtures/mysql-bin.02")
 	binlogFilenameThree := filepath.Join(dataDir, "fixtures/mysql-bin.empty")
 
-	parseFunc := createBinlogParseFunc(true)
-
 	t.Run("binlog index file not found", func(t *testing.T) {
 		parsedIndexFile, err := ioutil.TempFile("", "test")
 		defer os.Remove(parsedIndexFile.Name())
@@ -29,7 +27,8 @@ func TestParseFromBinlogIndex(t *testing.T) {
 		outputDir, _ := ioutil.TempDir("", "test")
 		defer os.RemoveAll(outputDir)
 
-		err = parseFromBinlogIndex("/not/there", parsedIndexFile.Name(), outputDir, parseFunc)
+		parseFunc := createBinlogParseFunc(createConsumerChain(outputDir))
+		err = parseFromBinlogIndex("/not/there", parsedIndexFile.Name(), parseFunc)
 
 		if err == nil {
 			t.Fatal("Expected error when parsing non-existing file")
@@ -43,7 +42,8 @@ func TestParseFromBinlogIndex(t *testing.T) {
 		outputDir, _ := ioutil.TempDir("", "test")
 		defer os.RemoveAll(outputDir)
 
-		err = parseFromBinlogIndex(binlogIndexFile.Name(), "/not/there", outputDir, parseFunc)
+		parseFunc := createBinlogParseFunc(createConsumerChain(outputDir))
+		err = parseFromBinlogIndex(binlogIndexFile.Name(), "/not/there", parseFunc)
 
 		if err == nil {
 			t.Fatal("Expected error when parsing non-existing file")
@@ -64,7 +64,8 @@ func TestParseFromBinlogIndex(t *testing.T) {
 		binlogIndexFile.WriteString(fmt.Sprintf("%s\n", binlogFilenameTwo))
 		binlogIndexFile.WriteString(fmt.Sprintf("%s\n", binlogFilenameThree))
 
-		err = parseFromBinlogIndex(binlogIndexFile.Name(), parsedIndexFile.Name(), outputDir, parseFunc)
+		parseFunc := createBinlogParseFunc(createConsumerChain(outputDir))
+		err = parseFromBinlogIndex(binlogIndexFile.Name(), parsedIndexFile.Name(), parseFunc)
 
 		if err != nil {
 			t.Fatal("Expected no error when parsing file")
@@ -98,7 +99,8 @@ func TestParseFromBinlogIndex(t *testing.T) {
 
 		binlogIndexFile.WriteString(fmt.Sprintf("%s\n", binlogFilenameOne))
 
-		err = parseFromBinlogIndex(binlogIndexFile.Name(), parsedIndexFile.Name(), outputDir, parseFunc)
+		parseFunc := createBinlogParseFunc(createConsumerChain(outputDir))
+		err = parseFromBinlogIndex(binlogIndexFile.Name(), parsedIndexFile.Name(), parseFunc)
 
 		if err != nil {
 			t.Fatal("Expected no error when parsing file")
@@ -127,7 +129,8 @@ func TestParseFromBinlogIndex(t *testing.T) {
 
 		parsedIndexFile.WriteString(fmt.Sprintf("%s\n", binlogFilenameOne))
 
-		err = parseFromBinlogIndex(binlogIndexFile.Name(), parsedIndexFile.Name(), outputDir, parseFunc)
+		parseFunc := createBinlogParseFunc(createConsumerChain(outputDir))
+		err = parseFromBinlogIndex(binlogIndexFile.Name(), parsedIndexFile.Name(), parseFunc)
 
 		if err != nil {
 			t.Fatal("Expected no error when parsing file")
@@ -162,7 +165,8 @@ func TestParseFromBinlogIndex(t *testing.T) {
 		binlogIndexFile.WriteString(fmt.Sprintf("%s\n", binlogFilenameOne))
 		binlogIndexFile.WriteString(fmt.Sprintf("%s\n", binlogFilenameTwo))
 
-		err = parseFromBinlogIndex(binlogIndexFile.Name(), parsedIndexFile.Name(), "/not/there", parseFunc)
+		parseFunc := createBinlogParseFunc(createConsumerChain("/not/there"))
+		err = parseFromBinlogIndex(binlogIndexFile.Name(), parsedIndexFile.Name(), parseFunc)
 
 		if err == nil {
 			t.Fatal("Expected error when output dir doesn't exist")

@@ -10,7 +10,6 @@ import (
 func parseFromBinlogIndex(
 	binlogIndexFilename string,
 	parsedIndexFilename string,
-	outputDir string,
 	parseFunc binlogParseFunc,
 ) error {
 	glog.V(1).Info("Parsing binlog index")
@@ -48,7 +47,6 @@ func parseFromBinlogIndex(
 	glog.V(1).Infof("Will parse %v", filesToParse)
 
 	parsedFiles, err := parseMultipleBinlogFiles(
-		outputDir,
 		filesToParse[:len(filesToParse)-1],
 		parseFunc,
 	)
@@ -69,7 +67,7 @@ func parseFromBinlogIndex(
 	return nil
 }
 
-func parseMultipleBinlogFiles(outputDir string, filesToParse []string, parseFunc binlogParseFunc) ([]string, error) {
+func parseMultipleBinlogFiles(filesToParse []string, parseFunc binlogParseFunc) ([]string, error) {
 	parsedFiles := make([]string, len(filesToParse))
 	errors := make([]error, len(filesToParse))
 
@@ -82,7 +80,7 @@ func parseMultipleBinlogFiles(outputDir string, filesToParse []string, parseFunc
 		go func(i int, f string) {
 			defer wg.Done()
 
-			err := parseFunc(f, outputDir)
+			err := parseFunc(f)
 
 			if err != nil {
 				errors[i] = err

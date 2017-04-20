@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"zalora/binlog-parser/parser"
 	"zalora/binlog-parser/test"
 )
 
@@ -20,7 +21,7 @@ func TestParseBinlogFile(t *testing.T) {
 		outputDir, _ := ioutil.TempDir("", "test")
 		defer os.RemoveAll(outputDir)
 
-		err := parseBinlogFile("/not/there", outputDir, true)
+		err := parseBinlogFile("/not/there", createConsumerChain(outputDir))
 
 		if err == nil {
 			t.Fatal("Expected error when parsing non-existing file")
@@ -29,7 +30,7 @@ func TestParseBinlogFile(t *testing.T) {
 
 	t.Run("output dir not found", func(t *testing.T) {
 		binlogFilename := filepath.Join(dataDir, "fixtures/mysql-bin.01")
-		err := parseBinlogFile(binlogFilename, "/not/there", true)
+		err := parseBinlogFile(binlogFilename, createConsumerChain("/not/there"))
 
 		if err == nil {
 			t.Fatal("Expected error when parsing non-existing file")
@@ -52,7 +53,7 @@ func TestParseBinlogFile(t *testing.T) {
 			outputDir, _ := ioutil.TempDir("", "test")
 			defer os.RemoveAll(outputDir)
 
-			err := parseBinlogFile(binlogFilename, outputDir, true)
+			err := parseBinlogFile(binlogFilename, createConsumerChain(outputDir))
 
 			if err != nil {
 				t.Fatal(fmt.Sprintf("Expected no error when successfully parsing file %s", err))
@@ -91,4 +92,12 @@ func assertFilesAreEqual(t *testing.T, a string, b string) {
 	if f1Str != f2Str {
 		t.Fatal(fmt.Sprintf("Files do not match\nFile 1:\n==========\n%s\n==========\n%s\n==========", f1Str, f2Str))
 	}
+}
+
+func createConsumerChain(outputDir string) parser.ConsumerChain {
+	consumerChain := parser.NewConsumerChain()
+	consumerChain.PrettyPrint(true)
+	consumerChain.OutputParsedFilesToDir(outputDir)
+
+	return consumerChain
 }

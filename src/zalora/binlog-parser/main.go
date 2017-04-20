@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/golang/glog"
 	"os"
 	"path"
 	"zalora/binlog-parser/database"
@@ -28,9 +27,8 @@ func main() {
 	switch *modeFlag {
 	case "parse":
 		binlogFileName := *binlogFilenameFlag
-		outputDir := *outputDirFlag
 
-		err := parse(binlogFileName, outputDir)
+		err := parse(binlogFileName)
 
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Got error: %s", err)
@@ -47,13 +45,12 @@ func main() {
 			os.Exit(1)
 		}
 
-		outputDir := *outputDirFlag
 		watcherIndexFilename := *watcherIndexFilenameFlag
 
 		err := watcher.WatchBinlogIndexFile(
 			binlogIndexFilename,
 			watcherIndexFilename,
-			createWatcherParseFunc(outputDir),
+			parse,
 		)
 
 		if err != nil {
@@ -70,12 +67,9 @@ func main() {
 	}
 }
 
-func outputFilename(outputDir string, binlogFilename string) string {
-	basename := path.Base(binlogFilename)
-	return path.Join(outputDir, fmt.Sprintf("%s.json", basename))
-}
+func parse(binlogFileName string) error {
+	outputDir := *outputDirFlag
 
-func parse(binlogFileName string, outputDir string) error {
 	if _, err := os.Stat(binlogFileName); os.IsNotExist(err) {
 		return err
 	}
@@ -104,34 +98,6 @@ func parse(binlogFileName string, outputDir string) error {
 	return parser.ParseBinlog(binlogFileName, tableMap, consumerChain)
 }
 
-func createWatcherParseFunc(outputDir string) watcher.ParseFunc {
-	return func(binlogFileName string) (bool, error) {
-		glog.Infof("About to parse %s", binlogFileName)
-
-		err := parse(binlogFileName, outputDir)
-
-		switch err.(type) {
-		case nil:
-			// no error happened
-			glog.Infof("Successfully parsed %s", binlogFileName)
-
-			return true, nil
-
-		case *database.ConnectionError:
-			// database connection errors can be ignored
-			glog.Infof("Ignoring database connection error: %s", err)
-
-			return false, nil
-
-		default:
-			// some unknown error happened
-			glog.Errorf("Error while parsing watched file %s", err)
-
-			return false, err
-		}
-	}
-}
-
 func getEnvOrDefault(varname string, defaultValue string) string {
 	value := os.Getenv(varname)
 
@@ -140,4 +106,9 @@ func getEnvOrDefault(varname string, defaultValue string) string {
 	}
 
 	return value
+}
+
+func outputFilename(outputDir string, binlogFilename string) string {
+	basename := path.Base(binlogFilename)
+	return path.Join(outputDir, fmt.Sprintf("%s.json", basename))
 }

@@ -25,8 +25,8 @@ func NewIndex(file *os.File) Index {
 	return Index{lines: lines, filename: file.Name()}
 }
 
-func (i *Index) Append(line string) {
-	i.lines = append(i.lines, line)
+func (i *Index) Append(line ...string) {
+	i.lines = append(i.lines, line...)
 }
 
 func (i *Index) Sync() error {

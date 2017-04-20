@@ -11,13 +11,17 @@ import (
 
 var fileMutex sync.Mutex
 
-type ParseFunc func(string) (bool, error)
+type ParseFunc func(string) error
 
 func WatchBinlogIndexFile(binlogIndexFilename string, watcherIndexFilename string, parseFunc ParseFunc) error {
-	binlogIndexChanged := func() error {
+	watcherFunc := createWatchFunc(binlogIndexFilename, watcherIndexFilename, parseFunc)
+	return filesystem.WatchDirChanges(filepath.Dir(binlogIndexFilename), watcherFunc)
+}
+
+func createWatchFunc(binlogIndexFilename string, watcherIndexFilename string, parseFunc ParseFunc) func() error {
+	return func() error {
 		fileMutex.Lock()
 		defer fileMutex.Unlock()
-
 		glog.Info("binlog dir changed")
 
 		watcherIndexFile, err := os.OpenFile(watcherIndexFilename, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
@@ -47,28 +51,43 @@ func WatchBinlogIndexFile(binlogIndexFilename string, watcherIndexFilename strin
 			return nil
 		}
 
-		glog.Infof("Diff result: %v", filesToParse)
+		parsedFiles, err := parseFiles(filesToParse, parseFunc)
 
-		for _, line := range filesToParse[:len(filesToParse)-1] { // skip newest
-			glog.Infof("Need to parse binlog %s", line)
-
-			success, err := parseFunc(line)
-
-			if err != nil {
-				glog.Infof("Failed to parse binlog %s", line)
-
-				return err
-			}
-
-			if success {
-				watcherIndex.Append(line)
-			}
+		if err != nil {
+			return err
 		}
 
-		watcherIndex.Sync()
+		watcherIndex.Append(parsedFiles...)
+		err = watcherIndex.Sync()
+
+		if err != nil {
+			return err
+		}
 
 		return nil
 	}
+}
 
-	return filesystem.WatchDirChanges(filepath.Dir(binlogIndexFilename), binlogIndexChanged)
+func parseFiles(filesToParse []string, parseFunc ParseFunc) ([]string, error) {
+	glog.Infof("Diff result: %v", filesToParse)
+
+	var parsedFiles []string
+
+	for _, line := range filesToParse[:len(filesToParse)-1] { // skip newest
+		glog.Infof("Need to parse binlog %s", line)
+
+		err := parseFunc(line)
+
+		if err != nil {
+			glog.Infof("Failed to parse binlog %s", line)
+
+			return nil, err
+		}
+
+		glog.Infof("Successfully parsed binlog %s", line)
+
+		parsedFiles = append(parsedFiles, line)
+	}
+
+	return parsedFiles, nil
 }

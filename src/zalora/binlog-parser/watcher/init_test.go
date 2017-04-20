@@ -1,4 +1,4 @@
-package filesystem
+package watcher
 
 import (
 	"testing"

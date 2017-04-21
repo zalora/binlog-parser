@@ -1,7 +1,6 @@
 package conversion
 
 import (
-	"fmt"
 	"github.com/golang/glog"
 	"github.com/siddontang/go-mysql/replication"
 	"time"
@@ -33,7 +32,7 @@ func ConvertRowsEventsToMessages(xId uint64, rowsEventsData []RowsEventData) []m
 	var ret []messages.Message
 
 	for _, d := range rowsEventsData {
-		rowData := rowData(d.BinlogEvent, d.TableMetadata.Fields)
+		rowData := mapRowDataDataToColumnNames(d.BinlogEvent.Rows, d.TableMetadata.Fields)
 
 		header := messages.NewMessageHeader(
 			d.TableMetadata.Schema,
@@ -75,13 +74,13 @@ func ConvertRowsEventsToMessages(xId uint64, rowsEventsData []RowsEventData) []m
 	return ret
 }
 
-func createUpdateMessagesFromRowData(header messages.MessageHeader, rowData []map[string]interface{}) []messages.UpdateMessage {
+func createUpdateMessagesFromRowData(header messages.MessageHeader, rowData []messages.MessageRowData) []messages.UpdateMessage {
 	if len(rowData)%2 != 0 {
 		panic("update rows should be old/new pairs") // should never happen as per mysql format
 	}
 
 	var ret []messages.UpdateMessage
-	var tmp map[string]interface{}
+	var tmp messages.MessageRowData
 
 	for index, data := range rowData {
 		if index%2 == 0 {
@@ -94,7 +93,7 @@ func createUpdateMessagesFromRowData(header messages.MessageHeader, rowData []ma
 	return ret
 }
 
-func createInsertMessagesFromRowData(header messages.MessageHeader, rowData []map[string]interface{}) []messages.InsertMessage {
+func createInsertMessagesFromRowData(header messages.MessageHeader, rowData []messages.MessageRowData) []messages.InsertMessage {
 	var ret []messages.InsertMessage
 
 	for _, data := range rowData {
@@ -104,35 +103,11 @@ func createInsertMessagesFromRowData(header messages.MessageHeader, rowData []ma
 	return ret
 }
 
-func createDeleteMessagesFromRowData(header messages.MessageHeader, rowData []map[string]interface{}) []messages.DeleteMessage {
+func createDeleteMessagesFromRowData(header messages.MessageHeader, rowData []messages.MessageRowData) []messages.DeleteMessage {
 	var ret []messages.DeleteMessage
 
 	for _, data := range rowData {
 		ret = append(ret, messages.NewDeleteMessage(header, data))
-	}
-
-	return ret
-}
-
-func rowData(rowsEvent replication.RowsEvent, columnNames map[int]string) []map[string]interface{} {
-	var ret []map[string]interface{}
-
-	for _, rows := range rowsEvent.Rows {
-		data := make(map[string]interface{})
-		unknownCount := 0
-
-		for j, d := range rows {
-			columnName, exists := columnNames[j]
-
-			if !exists {
-				columnName = fmt.Sprintf("(unknown_%d)", unknownCount)
-				unknownCount++
-			}
-
-			data[columnName] = d
-		}
-
-		ret = append(ret, data)
 	}
 
 	return ret

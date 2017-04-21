@@ -56,6 +56,13 @@ func (b baseMessage) GetType() MessageType {
 	return b.Type
 }
 
+type MessageRow map[string]interface{}
+
+type MessageRowData struct {
+	Row           MessageRow
+	MappingNotice string
+}
+
 type SqlQuery string
 
 type QueryMessage struct {
@@ -69,28 +76,28 @@ func NewQueryMessage(header MessageHeader, query SqlQuery) QueryMessage {
 
 type UpdateMessage struct {
 	baseMessage
-	OldData map[string]interface{}
-	NewData map[string]interface{}
+	OldData MessageRowData
+	NewData MessageRowData
 }
 
-func NewUpdateMessage(header MessageHeader, oldData map[string]interface{}, newData map[string]interface{}) UpdateMessage {
+func NewUpdateMessage(header MessageHeader, oldData MessageRowData, newData MessageRowData) UpdateMessage {
 	return UpdateMessage{baseMessage: baseMessage{Header: header, Type: MESSAGE_TYPE_UPDATE}, OldData: oldData, NewData: newData}
 }
 
 type InsertMessage struct {
 	baseMessage
-	Data map[string]interface{}
+	Data MessageRowData
 }
 
-func NewInsertMessage(header MessageHeader, data map[string]interface{}) InsertMessage {
+func NewInsertMessage(header MessageHeader, data MessageRowData) InsertMessage {
 	return InsertMessage{baseMessage: baseMessage{Header: header, Type: MESSAGE_TYPE_INSERT}, Data: data}
 }
 
 type DeleteMessage struct {
 	baseMessage
-	Data map[string]interface{}
+	Data MessageRowData
 }
 
-func NewDeleteMessage(header MessageHeader, data map[string]interface{}) DeleteMessage {
+func NewDeleteMessage(header MessageHeader, data MessageRowData) DeleteMessage {
 	return DeleteMessage{baseMessage: baseMessage{Header: header, Type: MESSAGE_TYPE_DELETE}, Data: data}
 }

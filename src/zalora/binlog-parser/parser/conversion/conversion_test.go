@@ -50,13 +50,13 @@ func TestConvertRowsEventsToMessages(t *testing.T) {
 
 		insertMessageOne := convertedMessages[0].(messages.InsertMessage)
 
-		if !reflect.DeepEqual(insertMessageOne.Data, map[string]interface{}{"field_1": "value_1", "field_2": "value_2"}) {
+		if !reflect.DeepEqual(insertMessageOne.Data, messages.MessageRowData{Row: messages.MessageRow{"field_1": "value_1", "field_2": "value_2"}}) {
 			t.Fatal(fmt.Sprintf("Wrong data for insert message 1 - got %v", insertMessageOne.Data))
 		}
 
 		insertMessageTwo := convertedMessages[1].(messages.InsertMessage)
 
-		if !reflect.DeepEqual(insertMessageTwo.Data, map[string]interface{}{"field_1": "value_3", "field_2": "value_4"}) {
+		if !reflect.DeepEqual(insertMessageTwo.Data, messages.MessageRowData{Row: messages.MessageRow{"field_1": "value_3", "field_2": "value_4"}}) {
 			t.Fatal(fmt.Sprintf("Wrong data for insert message 2 - got %v", insertMessageTwo.Data))
 		}
 	})
@@ -77,13 +77,13 @@ func TestConvertRowsEventsToMessages(t *testing.T) {
 
 		deleteMessageOne := convertedMessages[0].(messages.DeleteMessage)
 
-		if !reflect.DeepEqual(deleteMessageOne.Data, map[string]interface{}{"field_1": "value_1", "field_2": "value_2"}) {
+		if !reflect.DeepEqual(deleteMessageOne.Data, messages.MessageRowData{Row: messages.MessageRow{"field_1": "value_1", "field_2": "value_2"}}) {
 			t.Fatal(fmt.Sprintf("Wrong data for delete message 1 - got %v", deleteMessageOne.Data))
 		}
 
 		deleteMessageTwo := convertedMessages[1].(messages.DeleteMessage)
 
-		if !reflect.DeepEqual(deleteMessageTwo.Data, map[string]interface{}{"field_1": "value_3", "field_2": "value_4"}) {
+		if !reflect.DeepEqual(deleteMessageTwo.Data, messages.MessageRowData{Row: messages.MessageRow{"field_1": "value_3", "field_2": "value_4"}}) {
 			t.Fatal(fmt.Sprintf("Wrong data for delete message 2 - got %v", deleteMessageTwo.Data))
 		}
 	})
@@ -103,17 +103,17 @@ func TestConvertRowsEventsToMessages(t *testing.T) {
 
 		updateMessage := convertedMessages[0].(messages.UpdateMessage)
 
-		if !reflect.DeepEqual(updateMessage.OldData, map[string]interface{}{"field_1": "value_1", "field_2": "value_2"}) {
+		if !reflect.DeepEqual(updateMessage.OldData, messages.MessageRowData{Row: messages.MessageRow{"field_1": "value_1", "field_2": "value_2"}}) {
 			t.Fatal(fmt.Sprintf("Wrong data for update message old data - got %v", updateMessage.OldData))
 		}
 
-		if !reflect.DeepEqual(updateMessage.NewData, map[string]interface{}{"field_1": "value_3", "field_2": "value_4"}) {
+		if !reflect.DeepEqual(updateMessage.NewData, messages.MessageRowData{Row: messages.MessageRow{"field_1": "value_3", "field_2": "value_4"}}) {
 			t.Fatal(fmt.Sprintf("Wrong data for update message new data - got %v", updateMessage.NewData))
 		}
 	})
 
 	t.Run("Unknown event type", func(t *testing.T) {
-		eventHeader := createEventHeader(logPos, replication.RAND_EVENT) // any unkown event actually
+		eventHeader := createEventHeader(logPos, replication.RAND_EVENT) // can be any unkown event actually
 		rowsEvent := createRowsEvent()
 		rowsEventData := []RowsEventData{NewRowsEventData(eventHeader, rowsEvent, tableMetadata)}
 

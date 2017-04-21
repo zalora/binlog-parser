@@ -8,9 +8,12 @@
     },
     "Type": "Insert",
     "Data": {
-        "address": "3950 North 1st Street CA 95134",
-        "building_name": "ACME Headquaters",
-        "building_no": 1
+        "Row": {
+            "address": "3950 North 1st Street CA 95134",
+            "building_name": "ACME Headquaters",
+            "building_no": 1
+        },
+        "MappingNotice": ""
     }
 }
 {
@@ -23,9 +26,12 @@
     },
     "Type": "Insert",
     "Data": {
-        "address": "5000 North 1st Street CA 95134",
-        "building_name": "ACME Sales",
-        "building_no": 2
+        "Row": {
+            "address": "5000 North 1st Street CA 95134",
+            "building_name": "ACME Sales",
+            "building_no": 2
+        },
+        "MappingNotice": ""
     }
 }
 {
@@ -38,9 +44,12 @@
     },
     "Type": "Insert",
     "Data": {
-        "building_no": 1,
-        "room_name": "Amazon",
-        "room_no": 1
+        "Row": {
+            "building_no": 1,
+            "room_name": "Amazon",
+            "room_no": 1
+        },
+        "MappingNotice": ""
     }
 }
 {
@@ -53,9 +62,12 @@
     },
     "Type": "Insert",
     "Data": {
-        "building_no": 1,
-        "room_name": "War Room",
-        "room_no": 2
+        "Row": {
+            "building_no": 1,
+            "room_name": "War Room",
+            "room_no": 2
+        },
+        "MappingNotice": ""
     }
 }
 {
@@ -68,9 +80,12 @@
     },
     "Type": "Insert",
     "Data": {
-        "building_no": 1,
-        "room_name": "Office of CEO",
-        "room_no": 3
+        "Row": {
+            "building_no": 1,
+            "room_name": "Office of CEO",
+            "room_no": 3
+        },
+        "MappingNotice": ""
     }
 }
 {
@@ -83,9 +98,12 @@
     },
     "Type": "Insert",
     "Data": {
-        "building_no": 2,
-        "room_name": "Marketing",
-        "room_no": 4
+        "Row": {
+            "building_no": 2,
+            "room_name": "Marketing",
+            "room_no": 4
+        },
+        "MappingNotice": ""
     }
 }
 {
@@ -98,9 +116,12 @@
     },
     "Type": "Insert",
     "Data": {
-        "building_no": 2,
-        "room_name": "Showroom",
-        "room_no": 5
+        "Row": {
+            "building_no": 2,
+            "room_name": "Showroom",
+            "room_no": 5
+        },
+        "MappingNotice": ""
     }
 }
 {
@@ -113,14 +134,20 @@
     },
     "Type": "Update",
     "OldData": {
-        "building_no": 2,
-        "room_name": "Marketing",
-        "room_no": 4
+        "Row": {
+            "building_no": 2,
+            "room_name": "Marketing",
+            "room_no": 4
+        },
+        "MappingNotice": ""
     },
     "NewData": {
-        "building_no": 2,
-        "room_name": "MARKETING",
-        "room_no": 4
+        "Row": {
+            "building_no": 2,
+            "room_name": "MARKETING",
+            "room_no": 4
+        },
+        "MappingNotice": ""
     }
 }
 {
@@ -133,14 +160,20 @@
     },
     "Type": "Update",
     "OldData": {
-        "building_no": 2,
-        "room_name": "Showroom",
-        "room_no": 5
+        "Row": {
+            "building_no": 2,
+            "room_name": "Showroom",
+            "room_no": 5
+        },
+        "MappingNotice": ""
     },
     "NewData": {
-        "building_no": 2,
-        "room_name": "SHOWROOM",
-        "room_no": 5
+        "Row": {
+            "building_no": 2,
+            "room_name": "SHOWROOM",
+            "room_no": 5
+        },
+        "MappingNotice": ""
     }
 }
 {
@@ -153,8 +186,11 @@
     },
     "Type": "Delete",
     "Data": {
-        "address": "3950 North 1st Street CA 95134",
-        "building_name": "ACME Headquaters",
-        "building_no": 1
+        "Row": {
+            "address": "3950 North 1st Street CA 95134",
+            "building_name": "ACME Headquaters",
+            "building_no": 1
+        },
+        "MappingNotice": ""
     }
 }

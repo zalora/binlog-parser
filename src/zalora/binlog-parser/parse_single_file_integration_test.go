@@ -90,7 +90,7 @@ func assertFilesAreEqual(t *testing.T, a string, b string) {
 	f2Str := strings.TrimSpace(string(f2))
 
 	if f1Str != f2Str {
-		t.Fatal(fmt.Sprintf("Files do not match\nFile 1:\n==========\n%s\n==========\n%s\n==========", f1Str, f2Str))
+		t.Fatal(fmt.Sprintf("Files do not match\nFile 1:\n==========\n%s\n==========\nFile 2\n%s\n==========", f1Str, f2Str))
 	}
 }
 

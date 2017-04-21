@@ -28,6 +28,7 @@ func ParseBinlogToMessages(binlogFileName string, tableMap database.TableMap, co
 				glog.V(3).Info("Skipping transaction savepoint")
 			} else {
 				glog.V(3).Info("Query event")
+
 				err := consumer(conversion.ConvertQueryEventToMessage(*e.Header, *queryEvent))
 
 				if err != nil {

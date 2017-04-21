@@ -19,10 +19,13 @@
     },
     "Type": "Insert",
     "Data": {
-        "(unknown_0)": 1,
-        "(unknown_1)": "2017-04-13",
-        "(unknown_2)": "Max",
-        "(unknown_3)": "Mustermann"
+        "Row": {
+            "(unknown_0)": 1,
+            "(unknown_1)": "2017-04-13",
+            "(unknown_2)": "Max",
+            "(unknown_3)": "Mustermann"
+        },
+        "MappingNotice": "column names array is missing field(s), will map them as unknown_*"
     }
 }
 {

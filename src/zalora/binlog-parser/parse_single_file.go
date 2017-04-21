@@ -19,7 +19,7 @@ func createBinlogParseFunc(consumerChain parser.ConsumerChain) binlogParseFunc {
 }
 
 func parseBinlogFile(binlogFilename string, consumerChain parser.ConsumerChain) error {
-	glog.V(1).Infof("Parsing binlog file %s", binlogFilename)
+	glog.V(2).Infof("Parsing binlog file %s", binlogFilename)
 
 	db_dsn := os.Getenv("DB_DSN")
 
@@ -37,7 +37,7 @@ func parseBinlogFile(binlogFilename string, consumerChain parser.ConsumerChain) 
 
 	tableMap := database.NewTableMap(db)
 
-	glog.V(1).Info("About to parse file ...")
+	glog.V(2).Info("About to parse file ...")
 
 	basename := path.Base(binlogFilename)
 	err = consumerChain.CollectAsJsonInFile(fmt.Sprintf("%s.json", basename))

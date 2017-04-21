@@ -12,7 +12,7 @@ func parseFromBinlogIndex(
 	parsedIndexFilename string,
 	parseFunc binlogParseFunc,
 ) error {
-	glog.V(1).Info("Parsing binlog index")
+	glog.V(2).Info("Parsing binlog index")
 
 	if _, err := os.Stat(binlogIndexFilename); os.IsNotExist(err) {
 		return err
@@ -40,11 +40,11 @@ func parseFromBinlogIndex(
 	filesToParse := binlogIndex.Diff(parsedIndex)
 
 	if len(filesToParse) <= 1 {
-		glog.V(1).Infof("No binlogs to parse, found %v", filesToParse)
+		glog.V(2).Infof("No binlogs to parse, found %v", filesToParse)
 		return nil
 	}
 
-	glog.V(1).Infof("Will parse %v", filesToParse)
+	glog.V(2).Infof("Will parse %v", filesToParse)
 
 	parsedFiles, err := parseMultipleBinlogFiles(
 		filesToParse[:len(filesToParse)-1],
@@ -55,7 +55,7 @@ func parseFromBinlogIndex(
 		return err
 	}
 
-	glog.V(1).Infof("Successfully parsed %v, updating parsed index", parsedFiles)
+	glog.V(2).Infof("Successfully parsed %v, updating parsed index", parsedFiles)
 
 	parsedIndex.Append(parsedFiles...)
 	err = parsedIndex.Sync()
@@ -75,7 +75,7 @@ func parseMultipleBinlogFiles(filesToParse []string, parseFunc binlogParseFunc) 
 	wg.Add(len(filesToParse))
 
 	for i, binlogFilename := range filesToParse {
-		glog.V(1).Infof("Parsing %s", binlogFilename)
+		glog.V(2).Infof("Parsing %s", binlogFilename)
 
 		go func(i int, f string) {
 			defer wg.Done()
@@ -95,7 +95,7 @@ func parseMultipleBinlogFiles(filesToParse []string, parseFunc binlogParseFunc) 
 	firstError := findFirstError(errors)
 	p := removeEmptyArrayEntries(parsedFiles)
 
-	glog.V(1).Infof("Parsed %v files - first error (if any): %s", p, firstError)
+	glog.V(2).Infof("Parsed %v files - first error (if any): %s", p, firstError)
 
 	return p, firstError
 }

@@ -43,7 +43,7 @@ func main() {
 
 		glog.V(1).Infof("Will parse file %s", binlogFilename)
 
-		parseFunc := createBinlogParseFunc(createConsumerChain())
+		parseFunc := createBinlogParseFunc(consumerChainFromArgs())
 		err := parseFunc(binlogFilename)
 
 		if err != nil {
@@ -66,7 +66,7 @@ func main() {
 		err := parseFromBinlogIndex(
 			indexFilename,
 			*parsedIndexFilenameFlag,
-			createBinlogParseFunc(createConsumerChain()),
+			createBinlogParseFunc(consumerChainFromArgs()),
 		)
 
 		if err != nil {
@@ -95,7 +95,7 @@ func printUsage() {
 	flag.PrintDefaults()
 }
 
-func createConsumerChain() parser.ConsumerChain {
+func consumerChainFromArgs() parser.ConsumerChain {
 	chain := parser.NewConsumerChain()
 
 	chain.OutputParsedFilesToDir(*outputDirFlag)

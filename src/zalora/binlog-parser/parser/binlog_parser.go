@@ -6,10 +6,10 @@ import (
 	"zalora/binlog-parser/parser/parser"
 )
 
-func ParseBinlog(binlogFileName string, tableMap database.TableMap, consumerChain ConsumerChain) error {
-	if _, err := os.Stat(binlogFileName); os.IsNotExist(err) {
+func ParseBinlog(binlogFilename string, tableMap database.TableMap, consumerChain ConsumerChain) error {
+	if _, err := os.Stat(binlogFilename); os.IsNotExist(err) {
 		return err
 	}
 
-	return parser.ParseBinlogToMessages(binlogFileName, tableMap, consumerChain.consumeMessage)
+	return parser.ParseBinlogToMessages(binlogFilename, tableMap, consumerChain.consumeMessage)
 }

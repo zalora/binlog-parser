@@ -11,7 +11,7 @@ import (
 
 type ConsumerFunc func(messages.Message) error
 
-func ParseBinlogToMessages(binlogFileName string, tableMap database.TableMap, consumer ConsumerFunc) error {
+func ParseBinlogToMessages(binlogFilename string, tableMap database.TableMap, consumer ConsumerFunc) error {
 	rowRowsEventBuffer := NewRowsEventBuffer()
 
 	p := replication.NewBinlogParser()
@@ -98,5 +98,5 @@ func ParseBinlogToMessages(binlogFileName string, tableMap database.TableMap, co
 		return nil
 	}
 
-	return p.ParseFile(binlogFileName, 0, f)
+	return p.ParseFile(binlogFilename, 0, f)
 }

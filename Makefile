@@ -1,5 +1,5 @@
 BIN_NAME := binlog-parser
-GOCC := env TZ="UTC" env GOPATH=$(CURDIR)/_vendor:$(CURDIR) go
+GOCC := env GOPATH=$(CURDIR)/_vendor:$(CURDIR) go
 SRC_DIR := zalora/binlog-parser/...
 TEST_DB_SCHEMA_FILE := data/fixtures/test_db.sql
 
@@ -13,11 +13,11 @@ test: unit-test integration-test
 
 unit-test:
 	$(info ************ UNIT TESTS ************)
-	env DATA_DIR=$(CURDIR)/data $(GOCC) test -tags=unit -cover $(SRC_DIR)
+	env TZ="UTC" env DATA_DIR=$(CURDIR)/data $(GOCC) test -tags=unit -cover $(SRC_DIR)
 
 integration-test: all integration-test-setup
 	$(info ************ INTEGRATION TESTS ************)
-	env DATA_DIR=$(CURDIR)/data $(GOCC) test -tags=integration -cover $(SRC_DIR)
+	env TZ="UTC" env DATA_DIR=$(CURDIR)/data $(GOCC) test -tags=integration -cover $(SRC_DIR)
 
 integration-test-setup:
 	mysql -uroot -e 'DROP DATABASE IF EXISTS test_db'

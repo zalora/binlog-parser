@@ -84,7 +84,7 @@ As this tool doesn't keep an internal representation of the database schema, it 
 queries in the binlog file already have diverged (e. g. parsing a binlog file from a few days ago, but the schema on the main database already changed
 by dropping or adding columns).
 
-The parser will NOT make an attempt to map data to fields in a table if the information schema retuns more or too little columns
+The parser will NOT make an attempt to map data to fields in a table if the information schema retuns more or too less columns
 compared to the format found in the binlog. The field names will be mapped as "unknown":
 
     {

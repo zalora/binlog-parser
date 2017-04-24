@@ -12,18 +12,26 @@ func mapRowDataDataToColumnNames(rows [][]interface{}, columnNames map[int]strin
 		data := make(map[string]interface{})
 		unknownCount := 0
 
+		detectedMismatch, mismatchNotice := detectMismatch(row, columnNames)
+
 		for columnIndex, columnValue := range row {
-			columnName, exists := columnNames[columnIndex]
-
-			if !exists {
-				columnName = fmt.Sprintf("(unknown_%d)", unknownCount)
+			if detectedMismatch {
+				data[fmt.Sprintf("(unknown_%d)", unknownCount)] = columnValue
 				unknownCount++
-			}
+			} else {
+				columnName, exists := columnNames[columnIndex]
 
-			data[columnName] = columnValue
+				if !exists {
+					// This should actually never happen
+					// Fail hard before doing anything weird
+					panic(fmt.Sprintf("No mismatch between row and column names array detected, but column %s not found", columnName))
+				}
+
+				data[columnName] = columnValue
+			}
 		}
 
-		if detected, mismatchNotice := detectMismatch(row, columnNames); detected {
+		if detectedMismatch {
 			mappedRows = append(mappedRows, messages.MessageRowData{Row: data, MappingNotice: mismatchNotice})
 		} else {
 			mappedRows = append(mappedRows, messages.MessageRowData{Row: data})

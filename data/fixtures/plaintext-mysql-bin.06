@@ -1,0 +1,77 @@
+/*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=1*/;
+/*!40019 SET @@session.max_insert_delayed_threads=0*/;
+/*!50003 SET @OLD_COMPLETION_TYPE=@@COMPLETION_TYPE,COMPLETION_TYPE=0*/;
+DELIMITER /*!*/;
+# at 4
+#170424 13:44:20 server id 1  end_log_pos 120 CRC32 0x79bdb602 	Start: binlog v 4, server v 5.6.35-log created 170424 13:44:20 at startup
+# Warning: this binlog is either in use or was not closed properly.
+ROLLBACK/*!*/;
+# at 120
+#170424 13:44:21 server id 1  end_log_pos 220 CRC32 0x7a632689 	Query	thread_id=1	exec_time=0	error_code=0
+use `test_db`/*!*/;
+SET TIMESTAMP=1493012661/*!*/;
+SET @@session.pseudo_thread_id=1/*!*/;
+SET @@session.foreign_key_checks=1, @@session.sql_auto_is_null=0, @@session.unique_checks=1, @@session.autocommit=1/*!*/;
+SET @@session.sql_mode=1075838976/*!*/;
+SET @@session.auto_increment_increment=1, @@session.auto_increment_offset=1/*!*/;
+/*!\C utf8 *//*!*/;
+SET @@session.character_set_client=33,@@session.collation_connection=33,@@session.collation_server=33/*!*/;
+SET @@session.lc_time_names=0/*!*/;
+SET @@session.collation_database=DEFAULT/*!*/;
+DELETE FROM `test_db`.`filler`
+/*!*/;
+# at 220
+#170424 13:44:44 server id 1  end_log_pos 589 CRC32 0xd08b66eb 	Query	thread_id=1	exec_time=0	error_code=0
+SET TIMESTAMP=1493012684/*!*/;
+CREATE TABLE `language` (
+  `language_id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `name` char(20) NOT NULL,
+  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`language_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8
+/*!*/;
+# at 589
+#170424 13:45:11 server id 1  end_log_pos 664 CRC32 0xc6a834e2 	Query	thread_id=1	exec_time=0	error_code=0
+SET TIMESTAMP=1493012711/*!*/;
+BEGIN
+/*!*/;
+# at 664
+#170424 13:45:11 server id 1  end_log_pos 723 CRC32 0x732c9cb2 	Table_map: `test_db`.`language` mapped to number 75
+# at 723
+#170424 13:45:11 server id 1  end_log_pos 771 CRC32 0x55b09be5 	Write_rows: table id 75 flags: STMT_END_F
+### INSERT INTO `test_db`.`language`
+### SET
+###   @1=70 /* TINYINT meta=0 nullable=0 is_null=0 */
+###   @2='German' /* STRING(60) meta=65084 nullable=0 is_null=0 */
+###   @3=1493012711 /* TIMESTAMP(0) meta=0 nullable=0 is_null=0 */
+# at 771
+#170424 13:45:11 server id 1  end_log_pos 802 CRC32 0xb5d1cf03 	Xid = 11
+COMMIT/*!*/;
+# at 802
+#170424 13:45:32 server id 1  end_log_pos 943 CRC32 0xcb92a71f 	Query	thread_id=1	exec_time=0	error_code=0
+SET TIMESTAMP=1493012732/*!*/;
+alter table language add some_field varchar(255) default NULL
+/*!*/;
+# at 943
+#170424 13:45:41 server id 1  end_log_pos 1018 CRC32 0x9fc76245 	Query	thread_id=1	exec_time=0	error_code=0
+SET TIMESTAMP=1493012741/*!*/;
+BEGIN
+/*!*/;
+# at 1018
+#170424 13:45:41 server id 1  end_log_pos 1080 CRC32 0xf00825ee 	Table_map: `test_db`.`language` mapped to number 76
+# at 1080
+#170424 13:45:41 server id 1  end_log_pos 1140 CRC32 0x7d5048c5 	Write_rows: table id 76 flags: STMT_END_F
+### INSERT INTO `test_db`.`language`
+### SET
+###   @1=71 /* TINYINT meta=0 nullable=0 is_null=0 */
+###   @2='German' /* STRING(60) meta=65084 nullable=0 is_null=0 */
+###   @3=1493012741 /* TIMESTAMP(0) meta=0 nullable=0 is_null=0 */
+###   @4='some value' /* VARSTRING(765) meta=765 nullable=1 is_null=0 */
+# at 1140
+#170424 13:45:41 server id 1  end_log_pos 1171 CRC32 0x011eb73d 	Xid = 13
+COMMIT/*!*/;
+DELIMITER ;
+# End of log file
+ROLLBACK /* added by mysqlbinlog */;
+/*!50003 SET COMPLETION_TYPE=@OLD_COMPLETION_TYPE*/;
+/*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=0*/;

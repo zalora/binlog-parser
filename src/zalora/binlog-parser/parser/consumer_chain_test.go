@@ -5,7 +5,6 @@ package parser
 import (
 	"io/ioutil"
 	"os"
-	"path/filepath"
 	"testing"
 	"time"
 	"zalora/binlog-parser/parser/messages"
@@ -36,14 +35,9 @@ func TestConsumerChain(t *testing.T) {
 		defer os.Remove(tmpfile.Name())
 
 		chain := NewConsumerChain()
-		chain.OutputParsedFilesToDir(filepath.Dir(tmpfile.Name()))
-		err := chain.CollectAsJsonInFile(filepath.Base(tmpfile.Name()))
+		chain.CollectAsJson(tmpfile, true)
 
-		if err != nil {
-			t.Fatal("Failed to register collector")
-		}
-
-		err = chain.consumeMessage(messageMinimal)
+		err := chain.consumeMessage(messageMinimal)
 
 		if err != nil {
 			t.Fatal("Failed to consume message")
@@ -57,15 +51,10 @@ func TestConsumerChain(t *testing.T) {
 		defer os.Remove(tmpfile.Name())
 
 		chain := NewConsumerChain()
+		chain.CollectAsJson(tmpfile, true)
 		chain.IncludeSchemas("some_db", "database_name")
-		chain.OutputParsedFilesToDir(filepath.Dir(tmpfile.Name()))
-		err := chain.CollectAsJsonInFile(filepath.Base(tmpfile.Name()))
 
-		if err != nil {
-			t.Fatal("Failed to register collector")
-		}
-
-		err = chain.consumeMessage(messageOne)
+		err := chain.consumeMessage(messageOne)
 
 		if err != nil {
 			t.Fatal("Failed to consume message")
@@ -79,15 +68,10 @@ func TestConsumerChain(t *testing.T) {
 		defer os.Remove(tmpfile.Name())
 
 		chain := NewConsumerChain()
+		chain.CollectAsJson(tmpfile, true)
 		chain.IncludeSchemas("some_db")
-		chain.OutputParsedFilesToDir(filepath.Dir(tmpfile.Name()))
-		err := chain.CollectAsJsonInFile(filepath.Base(tmpfile.Name()))
 
-		if err != nil {
-			t.Fatal("Failed to register collector")
-		}
-
-		err = chain.consumeMessage(messageOne)
+		err := chain.consumeMessage(messageOne)
 
 		if err != nil {
 			t.Fatal("Failed to consume message")
@@ -101,15 +85,10 @@ func TestConsumerChain(t *testing.T) {
 		defer os.Remove(tmpfile.Name())
 
 		chain := NewConsumerChain()
+		chain.CollectAsJson(tmpfile, true)
 		chain.IncludeTables("some_table", "table_name")
-		chain.OutputParsedFilesToDir(filepath.Dir(tmpfile.Name()))
-		err := chain.CollectAsJsonInFile(filepath.Base(tmpfile.Name()))
 
-		if err != nil {
-			t.Fatal("Failed to register collector")
-		}
-
-		err = chain.consumeMessage(messageOne)
+		err := chain.consumeMessage(messageOne)
 
 		if err != nil {
 			t.Fatal("Failed to consume message")
@@ -124,14 +103,9 @@ func TestConsumerChain(t *testing.T) {
 
 		chain := NewConsumerChain()
 		chain.IncludeTables("some_table")
-		chain.OutputParsedFilesToDir(filepath.Dir(tmpfile.Name()))
-		err := chain.CollectAsJsonInFile(filepath.Base(tmpfile.Name()))
+		chain.CollectAsJson(tmpfile, true)
 
-		if err != nil {
-			t.Fatal("Failed to register collector")
-		}
-
-		err = chain.consumeMessage(messageOne)
+		err := chain.consumeMessage(messageOne)
 
 		if err != nil {
 			t.Fatal("Failed to consume message")

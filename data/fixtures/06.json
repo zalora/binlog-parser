@@ -1,0 +1,70 @@
+{
+    "Header": {
+        "Schema": "",
+        "Table": "",
+        "BinlogMessageTime": "2017-04-24T05:44:21Z",
+        "BinlogPosition": 220,
+        "XId": 0
+    },
+    "Type": "Query",
+    "Query": "DELETE FROM `test_db`.`filler`"
+}
+{
+    "Header": {
+        "Schema": "",
+        "Table": "",
+        "BinlogMessageTime": "2017-04-24T05:44:44Z",
+        "BinlogPosition": 589,
+        "XId": 0
+    },
+    "Type": "Query",
+    "Query": "CREATE TABLE `language` (\n  `language_id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,\n  `name` char(20) NOT NULL,\n  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  PRIMARY KEY (`language_id`)\n) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8"
+}
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "language",
+        "BinlogMessageTime": "2017-04-24T05:45:11Z",
+        "BinlogPosition": 771,
+        "XId": 11
+    },
+    "Type": "Insert",
+    "Data": {
+        "Row": {
+            "(unknown_0)": 70,
+            "(unknown_1)": "German",
+            "(unknown_2)": "2017-04-24 13:45:11"
+        },
+        "MappingNotice": "row is missing field(s), ignoring missing"
+    }
+}
+{
+    "Header": {
+        "Schema": "",
+        "Table": "",
+        "BinlogMessageTime": "2017-04-24T05:45:32Z",
+        "BinlogPosition": 943,
+        "XId": 0
+    },
+    "Type": "Query",
+    "Query": "alter table language add some_field varchar(255) default NULL"
+}
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "language",
+        "BinlogMessageTime": "2017-04-24T05:45:41Z",
+        "BinlogPosition": 1140,
+        "XId": 13
+    },
+    "Type": "Insert",
+    "Data": {
+        "Row": {
+            "language_id": 71,
+            "last_update": "2017-04-24 13:45:41",
+            "name": "German",
+            "some_field": "some value"
+        },
+        "MappingNotice": ""
+    }
+}

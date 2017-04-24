@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 )
 
 type TableMetadata struct {
@@ -11,32 +12,54 @@ type TableMetadata struct {
 }
 
 type TableMap struct {
-	lookupMap map[uint64]TableMetadata
-	db        *sql.DB
+	tableMetadataMap map[uint64]TableMetadata
+	fieldsCache      map[string]map[int]string
+	db               *sql.DB
 }
 
 func NewTableMap(db *sql.DB) TableMap {
-	return TableMap{db: db, lookupMap: make(map[uint64]TableMetadata)}
+	return TableMap{
+		db:               db,
+		tableMetadataMap: make(map[uint64]TableMetadata),
+		fieldsCache:      make(map[string]map[int]string),
+	}
 }
 
-func (m *TableMap) Add(id uint64, schema string, table string) error {
-	fields, err := getFields(m.db, schema, table)
+func (m *TableMap) Add(id uint64, schema, table string) error {
+	fields, err := m.getFields(schema, table)
 
 	if err != nil {
 		return err
 	}
 
-	m.lookupMap[id] = TableMetadata{schema, table, fields}
+	m.tableMetadataMap[id] = TableMetadata{schema, table, fields}
 
 	return nil
 }
 
 func (m *TableMap) LookupTableMetadata(id uint64) (TableMetadata, bool) {
-	val, ok := m.lookupMap[id]
+	val, ok := m.tableMetadataMap[id]
 	return val, ok
 }
 
-func getFields(db *sql.DB, schema string, table string) (map[int]string, error) {
+func (m *TableMap) getFields(schema, table string) (map[int]string, error) {
+	cacheKey := fmt.Sprintf("%s_%s", schema, table)
+
+	if cachedFields, ok := m.fieldsCache[cacheKey]; ok {
+		return cachedFields, nil
+	}
+
+	fields, err := getFieldsFromDb(m.db, schema, table)
+	m.fieldsCache[cacheKey] = fields
+
+	if err != nil {
+		return nil, err
+	}
+
+	return fields, nil
+}
+
+func getFieldsFromDb(db *sql.DB, schema string, table string) (map[int]string, error) {
 	rows, err := db.Query(
 		"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?",
 		schema,

@@ -1,0 +1,166 @@
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "buildings",
+        "BinlogMessageTime": "2017-04-24T03:47:57Z",
+        "BinlogPosition": 323,
+        "XId": 9
+    },
+    "Type": "Insert",
+    "Data": {
+        "Row": {
+            "address": "bar",
+            "building_name": "foo",
+            "building_no": 3
+        },
+        "MappingNotice": ""
+    }
+}
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "buildings",
+        "BinlogMessageTime": "2017-04-24T03:47:57Z",
+        "BinlogPosition": 323,
+        "XId": 9
+    },
+    "Type": "Insert",
+    "Data": {
+        "Row": {
+            "address": "qoo",
+            "building_name": "baz",
+            "building_no": 4
+        },
+        "MappingNotice": ""
+    }
+}
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "buildings",
+        "BinlogMessageTime": "2017-04-24T03:50:14Z",
+        "BinlogPosition": 560,
+        "XId": 11
+    },
+    "Type": "Update",
+    "OldData": {
+        "Row": {
+            "address": "bar",
+            "building_name": "foo",
+            "building_no": 3
+        },
+        "MappingNotice": ""
+    },
+    "NewData": {
+        "Row": {
+            "address": "bar2",
+            "building_name": "foo2",
+            "building_no": 3
+        },
+        "MappingNotice": ""
+    }
+}
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "buildings",
+        "BinlogMessageTime": "2017-04-24T03:50:23Z",
+        "BinlogPosition": 797,
+        "XId": 12
+    },
+    "Type": "Update",
+    "OldData": {
+        "Row": {
+            "address": "qoo",
+            "building_name": "baz",
+            "building_no": 4
+        },
+        "MappingNotice": ""
+    },
+    "NewData": {
+        "Row": {
+            "address": "qoo2",
+            "building_name": "baz2",
+            "building_no": 4
+        },
+        "MappingNotice": ""
+    }
+}
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "buildings",
+        "BinlogMessageTime": "2017-04-24T03:50:35Z",
+        "BinlogPosition": 1130,
+        "XId": 13
+    },
+    "Type": "Update",
+    "OldData": {
+        "Row": {
+            "address": "5000 North 1st Street CA 95134",
+            "building_name": "ACME Sales",
+            "building_no": 2
+        },
+        "MappingNotice": ""
+    },
+    "NewData": {
+        "Row": {
+            "address": "",
+            "building_name": "ACME Sales",
+            "building_no": 2
+        },
+        "MappingNotice": ""
+    }
+}
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "buildings",
+        "BinlogMessageTime": "2017-04-24T03:50:35Z",
+        "BinlogPosition": 1130,
+        "XId": 13
+    },
+    "Type": "Update",
+    "OldData": {
+        "Row": {
+            "address": "bar2",
+            "building_name": "foo2",
+            "building_no": 3
+        },
+        "MappingNotice": ""
+    },
+    "NewData": {
+        "Row": {
+            "address": "",
+            "building_name": "foo2",
+            "building_no": 3
+        },
+        "MappingNotice": ""
+    }
+}
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "buildings",
+        "BinlogMessageTime": "2017-04-24T03:50:35Z",
+        "BinlogPosition": 1130,
+        "XId": 13
+    },
+    "Type": "Update",
+    "OldData": {
+        "Row": {
+            "address": "qoo2",
+            "building_name": "baz2",
+            "building_no": 4
+        },
+        "MappingNotice": ""
+    },
+    "NewData": {
+        "Row": {
+            "address": "",
+            "building_name": "baz2",
+            "building_no": 4
+        },
+        "MappingNotice": ""
+    }
+}

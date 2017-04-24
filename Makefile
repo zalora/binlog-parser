@@ -26,4 +26,4 @@ integration-test-setup:
 integration-test-schema-dump:
 	mysqldump --no-data -uroot -B test_db > $(TEST_DB_SCHEMA_FILE)
 
-.PHONY: all deps test unit-test integration-test-setup integration-test
+.PHONY: all deps test unit-test integration-test-setup integration-test integration-test-schema-dump

@@ -61,7 +61,7 @@ func (m *TableMap) getFields(schema, table string) (map[int]string, error) {
 
 func getFieldsFromDb(db *sql.DB, schema string, table string) (map[int]string, error) {
 	rows, err := db.Query(
-		"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?",
+		"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? ORDER BY ORDINAL_POSITION",
 		schema,
 		table,
 	)

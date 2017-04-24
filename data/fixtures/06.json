@@ -33,7 +33,7 @@
         "Row": {
             "(unknown_0)": 70,
             "(unknown_1)": "German",
-            "(unknown_2)": "2017-04-24 13:45:11"
+            "(unknown_2)": "2017-04-24 05:45:11"
         },
         "MappingNotice": "row is missing field(s), ignoring missing"
     }
@@ -61,7 +61,7 @@
     "Data": {
         "Row": {
             "language_id": 71,
-            "last_update": "2017-04-24 13:45:41",
+            "last_update": "2017-04-24 05:45:41",
             "name": "German",
             "some_field": "some value"
         },

@@ -1,5 +1,5 @@
 BIN_NAME := binlog-parser
-GOCC := env GOPATH=$(CURDIR)/_vendor:$(CURDIR) go
+GOCC := env TZ="UTC" env GOPATH=$(CURDIR)/_vendor:$(CURDIR) go
 SRC_DIR := zalora/binlog-parser/...
 TEST_DB_SCHEMA_FILE := data/fixtures/test_db.sql
 

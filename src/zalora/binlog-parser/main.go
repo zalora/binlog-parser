@@ -27,10 +27,16 @@ func main() {
 	}
 
 	binlogFilename := os.Args[2]
+	dbDsn := os.Getenv("DB_DSN")
+
+	if dbDsn == "" {
+		fmt.Fprint(os.Stderr, "Please set env variable DB_DSN to a valid MySQL connection string")
+		os.Exit(1)
+	}
 
 	glog.V(1).Infof("Will parse file %s", binlogFilename)
 
-	parseFunc := createBinlogParseFunc(consumerChainFromArgs())
+	parseFunc := createBinlogParseFunc(dbDsn, consumerChainFromArgs())
 	err := parseFunc(binlogFilename)
 
 	if err != nil {

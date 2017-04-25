@@ -17,7 +17,6 @@ import (
 
 func TestParseBinlogFile(t *testing.T) {
 	dataDir := os.Getenv("DATA_DIR")
-	os.Setenv("DB_DSN", test.TEST_DB_CONNECTION_STRING)
 
 	createConsumerChain := func(stream io.Writer) parser.ConsumerChain {
 		chain := parser.NewConsumerChain()
@@ -30,7 +29,7 @@ func TestParseBinlogFile(t *testing.T) {
 		tmpfile, _ := ioutil.TempFile("", "test")
 		defer os.RemoveAll(tmpfile.Name())
 
-		err := parseBinlogFile("/not/there", createConsumerChain(tmpfile))
+		err := parseBinlogFile("/not/there", test.TEST_DB_CONNECTION_STRING, createConsumerChain(tmpfile))
 
 		if err == nil {
 			t.Fatal("Expected error when parsing non-existing file")
@@ -54,7 +53,7 @@ func TestParseBinlogFile(t *testing.T) {
 			var buffer bytes.Buffer
 			binlogFilename := filepath.Join(dataDir, tc.fixtureFilename)
 
-			err := parseBinlogFile(binlogFilename, createConsumerChain(&buffer))
+			err := parseBinlogFile(binlogFilename, test.TEST_DB_CONNECTION_STRING, createConsumerChain(&buffer))
 
 			if err != nil {
 				t.Fatal(fmt.Sprintf("Expected no error when successfully parsing file %s", err))

@@ -1,5 +1,7 @@
 # binlog-parser
 
+[![Build Status](https://travis-ci.com/zalora/binlog-parser.svg?token=sSszX6Gpx3jukw6FyEyD&branch=master)](https://travis-ci.com/zalora/binlog-parser)
+
 A tool for parsing a MySQL binlog file to JSON. Reads a binlog input file, queries a database for field names, writes JSON to stdout. The output looks like this:
 
     {

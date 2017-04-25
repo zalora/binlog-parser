@@ -1,0 +1,54 @@
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "buildings",
+        "BinlogMessageTime": "2017-04-13T06:34:30Z",
+        "BinlogPosition": 397,
+        "XId": 9
+    },
+    "Type": "Insert",
+    "Data": {
+        "Row": {
+            "address": "3950 North 1st Street CA 95134",
+            "building_name": "ACME Headquaters",
+            "building_no": 1
+        },
+        "MappingNotice": ""
+    }
+}
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "buildings",
+        "BinlogMessageTime": "2017-04-13T06:34:30Z",
+        "BinlogPosition": 397,
+        "XId": 9
+    },
+    "Type": "Insert",
+    "Data": {
+        "Row": {
+            "address": "5000 North 1st Street CA 95134",
+            "building_name": "ACME Sales",
+            "building_no": 2
+        },
+        "MappingNotice": ""
+    }
+}
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "buildings",
+        "BinlogMessageTime": "2017-04-13T06:35:36Z",
+        "BinlogPosition": 1226,
+        "XId": 14
+    },
+    "Type": "Delete",
+    "Data": {
+        "Row": {
+            "address": "3950 North 1st Street CA 95134",
+            "building_name": "ACME Headquaters",
+            "building_no": 1
+        },
+        "MappingNotice": ""
+    }
+}

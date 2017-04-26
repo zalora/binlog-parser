@@ -4,7 +4,7 @@ SRC_DIR := zalora/binlog-parser/...
 TEST_DB_SCHEMA_FILE := data/fixtures/test_db.sql
 
 all:
-	$(GOCC) install $(SRC_DIR)
+	env CGO_ENABLED=0 $(GOCC) install -ldflags '-s' $(SRC_DIR)
 
 deps:
 	git submodule update --init

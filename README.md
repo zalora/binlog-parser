@@ -43,7 +43,7 @@ Requires Go version 1.7 or higher.
 
 Run `binlog-parser -h` to get the list of available options:
 
-    Usage:	binlog-parser binlog [options ...]
+    Usage:	binlog-parser [options ...] binlog
 
     Options are:
 

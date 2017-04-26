@@ -21,12 +21,12 @@ func main() {
 
 	flag.Parse()
 
-	if len(os.Args) < 2 {
+	if flag.NArg() != 1 {
 		printUsage()
 		os.Exit(1)
 	}
 
-	binlogFilename := os.Args[2]
+	binlogFilename := flag.Arg(0)
 	dbDsn := os.Getenv("DB_DSN")
 
 	if dbDsn == "" {
@@ -51,17 +51,17 @@ func consumerChainFromArgs() parser.ConsumerChain {
 	chain.CollectAsJson(os.Stdout, *prettyPrintJsonFlag)
 	glog.V(1).Infof("Pretty print JSON %s", *prettyPrintJsonFlag)
 
-	if includeTablesFlag != nil {
+	if *includeTablesFlag != "" {
 		includeTables := commaSeparatedListToArray(*includeTablesFlag)
 
 		chain.IncludeTables(includeTables...)
 		glog.V(1).Infof("Including tables %v", includeTables)
 	}
 
-	if includeSchemasFlag != nil {
+	if *includeSchemasFlag != "" {
 		includeSchemas := commaSeparatedListToArray(*includeSchemasFlag)
 
-		chain.IncludeTables(includeSchemas...)
+		chain.IncludeSchemas(includeSchemas...)
 		glog.V(1).Infof("Including schemas %v", includeSchemas)
 	}
 
@@ -73,7 +73,7 @@ func printUsage() {
 
 	usage := "Parse a binlog file, dump JSON to stdout. Includes options to filter by schema and table.\n" +
 		"Reads from information_schema database to find out the field names for a row event.\n\n" +
-		"Usage:\t%s binlog [options ...]\n\n" +
+		"Usage:\t%s [options ...] binlog\n\n" +
 		"Options are:\n\n"
 
 	fmt.Fprintf(os.Stderr, usage, binName)

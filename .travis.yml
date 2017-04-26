@@ -1,22 +1,32 @@
 language: go
 
 services:
-        - mysql
+- mysql
 
 install:
-        - make integration-test-setup
-        - make deps
-        - go version
+- make integration-test-setup
+- make deps
+- go version
 
 script:
-        - make
-        - make test
+- make
+- make test
 
 go:
-        - 1.7.x
-        - 1.8.x
-        - master
+- 1.7.x
+- 1.8.x
+- master
 
 matrix:
-        allow_failures:
-                - go: master
+  allow_failures:
+  - go: master
+
+deploy:
+  provider: releases
+  api_key:
+    secure: IMrcz8PI85C0PUCtfVRZrUZ72f37PMGg+MNfm/bsHbnZQtc6QZbykUvktRCpCU3YdR3YpwipHu79I1q3Nv4T1QcKqCT6ASLCUsGhmQ0wio2X4iMfsvlbQRx+BIQmoE2SyVJnIpAVmeBHtoxymf0UAeaBzH2FxTbRC6APnyItOy2BQmLlwfnaboC0QnF+h8HH0HEzau/TWFt+ea5XwqYGDFNqfbJ3uUvEuxj99lWj03TqPjPs3O3sNuSzxvcHbVIF9tL6crFd04y2TFRF6oLlLhqtRP2WepE43ZfnEsqCTN9N4MvubVk3KQ5R8lKwQ3tbAw/8lSF2hN5lntIkXd2jTpKv5uYRoBKxPAY4eHtTwJn8x8OylfwuqwKDMNVyz2IvXzQm7oacZW1/sKvgpnyX/jSHwrWIxUYO6Gv4GI3+Xqg/0EoESlFNPHD6eEAhNzSYr0EGYQW34okgGH8bKuiSilTsaL4ycD00zJQepkrkdCZJkifkbR24LlocIoaRe3HFCcxG8IAedLBVjRX/xHhegOlFitZ6sTI3PWDu++YGUXToBFsUicEdzGwkM+2Rby9jGJY2Mle5t7zj6vuZ3gMs8/5/AHqPjgG8ZPhkZz9TM8gleFkK7YH5rJjWehr7wn7iOr3SbbPknYWRdFNAqFOURR7H6a6KB7EwBjqhN3lEx8E=
+  file: bin/binlog-parser
+  skip_cleanup: true
+  on:
+    tags: true
+    go: '1.7.x'

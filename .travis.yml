@@ -4,6 +4,7 @@ services:
 - mysql
 
 install:
+- if [[ `go version` == *"go1.7"* ]]; then export RELEASE=1; fi
 - make integration-test-setup
 - make deps
 - go version
@@ -29,4 +30,4 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
-    go: master
+    condition: "$RELEASE = 1"

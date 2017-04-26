@@ -29,4 +29,4 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
-    go: '1.7.x'
+    go: '1.7'

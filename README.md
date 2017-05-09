@@ -72,6 +72,12 @@ Run `binlog-parser -h` to get the list of available options:
 
     DB_DSN	 Database connection string, needs read access to information_schema
 
+## Example usage
+
+Using `dbuser` and no password, connecting to `information_schema` database on localhost, parsing the binlog file `/some/binlog.bin`:
+
+    DB_DSN=dbuser@/information_schema ./binlog-parser /some/binlog.bin
+
 ## Matching field names and data
 
 The mysql binlog format doesn't include the fieldnames for row events (INSERT/UPDATE/DELETE). As the goal of the parser is to output

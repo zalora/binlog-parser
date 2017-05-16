@@ -179,3 +179,12 @@ This means you have to be very careful when parsing old binlog files, as the db 
 has no way of knowing of these changes.
 
 If this limitation is not acceptable, some tools like [Maxwell's Daemon by Zendesk](https://github.com/zendesk/maxwell) can work around that issue at the cost of greater complexity.
+
+# Releases
+
+How to do a release:
+
+    git tag -a X.X.X -m "... release note ..."
+    git push --follow-tags
+
+Travis CI will attach a statically built binary to the release tag on GitHub.

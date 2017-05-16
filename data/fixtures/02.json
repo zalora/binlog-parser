@@ -1,7 +1,7 @@
 {
     "Header": {
-        "Schema": "",
-        "Table": "",
+        "Schema": "test_db",
+        "Table": "(unknown)",
         "BinlogMessageTime": "2017-04-13T08:01:35Z",
         "BinlogPosition": 432,
         "XId": 0
@@ -30,8 +30,8 @@
 }
 {
     "Header": {
-        "Schema": "",
-        "Table": "",
+        "Schema": "test_db",
+        "Table": "(unknown)",
         "BinlogMessageTime": "2017-04-13T08:02:17Z",
         "BinlogPosition": 794,
         "XId": 0

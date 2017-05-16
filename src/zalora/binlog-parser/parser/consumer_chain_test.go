@@ -11,19 +11,19 @@ import (
 )
 
 func TestConsumerChain(t *testing.T) {
-	messageMinimal := messages.NewQueryMessage(
-		messages.NewMinimalMessageHeader(time.Now(), 100),
+	messageOne := messages.NewQueryMessage(
+		messages.NewMessageHeader("database_name", "table_name", time.Now(), 100, 100),
 		messages.SqlQuery("SELECT * FROM table"),
 	)
 
-	messageOne := messages.NewQueryMessage(
+	messageTwo := messages.NewQueryMessage(
 		messages.NewMessageHeader("database_name", "table_name", time.Now(), 100, 100),
 		messages.SqlQuery("SELECT * FROM table"),
 	)
 
 	t.Run("No predicates, no collectors", func(t *testing.T) {
 		chain := NewConsumerChain()
-		err := chain.consumeMessage(messageMinimal)
+		err := chain.consumeMessage(messageOne)
 
 		if err != nil {
 			t.Fatal("Failed to consume message")
@@ -37,7 +37,7 @@ func TestConsumerChain(t *testing.T) {
 		chain := NewConsumerChain()
 		chain.CollectAsJson(tmpfile, true)
 
-		err := chain.consumeMessage(messageMinimal)
+		err := chain.consumeMessage(messageOne)
 
 		if err != nil {
 			t.Fatal("Failed to consume message")
@@ -54,7 +54,7 @@ func TestConsumerChain(t *testing.T) {
 		chain.CollectAsJson(tmpfile, true)
 		chain.IncludeSchemas("some_db", "database_name")
 
-		err := chain.consumeMessage(messageOne)
+		err := chain.consumeMessage(messageTwo)
 
 		if err != nil {
 			t.Fatal("Failed to consume message")
@@ -71,7 +71,7 @@ func TestConsumerChain(t *testing.T) {
 		chain.CollectAsJson(tmpfile, true)
 		chain.IncludeSchemas("some_db")
 
-		err := chain.consumeMessage(messageOne)
+		err := chain.consumeMessage(messageTwo)
 
 		if err != nil {
 			t.Fatal("Failed to consume message")
@@ -88,7 +88,7 @@ func TestConsumerChain(t *testing.T) {
 		chain.CollectAsJson(tmpfile, true)
 		chain.IncludeTables("some_table", "table_name")
 
-		err := chain.consumeMessage(messageOne)
+		err := chain.consumeMessage(messageTwo)
 
 		if err != nil {
 			t.Fatal("Failed to consume message")
@@ -105,7 +105,7 @@ func TestConsumerChain(t *testing.T) {
 		chain.IncludeTables("some_table")
 		chain.CollectAsJson(tmpfile, true)
 
-		err := chain.consumeMessage(messageOne)
+		err := chain.consumeMessage(messageTwo)
 
 		if err != nil {
 			t.Fatal("Failed to consume message")

@@ -1,7 +1,7 @@
 {
     "Header": {
-        "Schema": "",
-        "Table": "",
+        "Schema": "test_db",
+        "Table": "(unknown)",
         "BinlogMessageTime": "2017-04-24T05:44:21Z",
         "BinlogPosition": 220,
         "XId": 0
@@ -11,8 +11,8 @@
 }
 {
     "Header": {
-        "Schema": "",
-        "Table": "",
+        "Schema": "test_db",
+        "Table": "(unknown)",
         "BinlogMessageTime": "2017-04-24T05:44:44Z",
         "BinlogPosition": 589,
         "XId": 0
@@ -40,8 +40,8 @@
 }
 {
     "Header": {
-        "Schema": "",
-        "Table": "",
+        "Schema": "test_db",
+        "Table": "(unknown)",
         "BinlogMessageTime": "2017-04-24T05:45:32Z",
         "BinlogPosition": 943,
         "XId": 0

@@ -31,13 +31,6 @@ func NewMessageHeader(schema string, table string, binlogMessageTime time.Time, 
 	}
 }
 
-func NewMinimalMessageHeader(binlogMessageTime time.Time, binlogPosition uint32) MessageHeader {
-	return MessageHeader{
-		BinlogMessageTime: binlogMessageTime.UTC().Format(time.RFC3339),
-		BinlogPosition:    binlogPosition,
-	}
-}
-
 type Message interface {
 	GetHeader() MessageHeader
 	GetType() MessageType

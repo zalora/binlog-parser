@@ -23,8 +23,19 @@ func NewRowsEventData(binlogEventHeader replication.EventHeader, binlogEvent rep
 }
 
 func ConvertQueryEventToMessage(binlogEventHeader replication.EventHeader, binlogEvent replication.QueryEvent) messages.Message {
-	header := messages.NewMinimalMessageHeader(time.Unix(int64(binlogEventHeader.Timestamp), 0), binlogEventHeader.LogPos)
-	message := messages.NewQueryMessage(header, messages.SqlQuery(binlogEvent.Query))
+	header := messages.NewMessageHeader(
+		string(binlogEvent.Schema),
+		"(unknown)",
+		time.Unix(int64(binlogEventHeader.Timestamp), 0),
+		binlogEventHeader.LogPos,
+		0,
+	)
+
+	message := messages.NewQueryMessage(
+		header,
+		messages.SqlQuery(binlogEvent.Query),
+	)
+
 	return messages.Message(message)
 }
 

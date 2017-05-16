@@ -1,0 +1,65 @@
+/*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=1*/;
+/*!40019 SET @@session.max_insert_delayed_threads=0*/;
+/*!50003 SET @OLD_COMPLETION_TYPE=@@COMPLETION_TYPE,COMPLETION_TYPE=0*/;
+DELIMITER /*!*/;
+# at 4
+#170516  3:42:32 server id 3704  end_log_pos 248 	Start: binlog v 4, server v 10.0.15-MariaDB-log created 170516  3:42:32 at startup
+# Warning: this binlog is either in use or was not closed properly.
+ROLLBACK/*!*/;
+# at 248
+#170516  3:42:32 server id 3704  end_log_pos 287 	Gtid list [0-3704-2814]
+# at 287
+#170516  3:42:32 server id 3704  end_log_pos 326 	Binlog checkpoint mysql-bin.000015
+# at 326
+#170516  3:44:29 server id 3704  end_log_pos 364 	GTID 0-3704-2815
+/*!100001 SET @@session.gtid_domain_id=0*//*!*/;
+/*!100001 SET @@session.server_id=3704*//*!*/;
+/*!100001 SET @@session.gtid_seq_no=2815*//*!*/;
+# at 364
+#170516  3:44:29 server id 3704  end_log_pos 627 	Query	thread_id=3	exec_time=0	error_code=0
+use `test_db`/*!*/;
+SET TIMESTAMP=1494906269/*!*/;
+SET @@session.pseudo_thread_id=3/*!*/;
+SET @@session.foreign_key_checks=1, @@session.sql_auto_is_null=0, @@session.unique_checks=1, @@session.autocommit=1/*!*/;
+SET @@session.sql_mode=33554432/*!*/;
+SET @@session.auto_increment_increment=1, @@session.auto_increment_offset=1/*!*/;
+/*!\C utf8 *//*!*/;
+SET @@session.character_set_client=33,@@session.collation_connection=33,@@session.collation_server=33/*!*/;
+SET @@session.lc_time_names=0/*!*/;
+SET @@session.collation_database=DEFAULT/*!*/;
+CREATE TABLE `departments` (
+  `dept_no` char(4) NOT NULL,
+  `dept_name` varchar(40) NOT NULL,
+  PRIMARY KEY (`dept_no`),
+  UNIQUE KEY `dept_name` (`dept_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+/*!*/;
+# at 627
+#170516  3:45:31 server id 3704  end_log_pos 665 	GTID 0-3704-2816
+/*!100001 SET @@session.gtid_seq_no=2816*//*!*/;
+BEGIN
+/*!*/;
+# at 665
+# at 723
+#170516  3:45:19 server id 3704  end_log_pos 723 	Table_map: `test_db`.`departments` mapped to number 515
+#170516  3:45:19 server id 3704  end_log_pos 761 	Write_rows: table id 515 flags: STMT_END_F
+### INSERT INTO `test_db`.`departments`
+### SET
+###   @1='ABC' /* STRING(12) meta=65036 nullable=0 is_null=0 */
+###   @2='DEF' /* VARSTRING(120) meta=120 nullable=0 is_null=0 */
+# at 761
+# at 819
+#170516  3:45:29 server id 3704  end_log_pos 819 	Table_map: `test_db`.`departments` mapped to number 515
+#170516  3:45:29 server id 3704  end_log_pos 857 	Write_rows: table id 515 flags: STMT_END_F
+### INSERT INTO `test_db`.`departments`
+### SET
+###   @1='RST' /* STRING(12) meta=65036 nullable=0 is_null=0 */
+###   @2='XYZ' /* VARSTRING(120) meta=120 nullable=0 is_null=0 */
+# at 857
+#170516  3:45:31 server id 3704  end_log_pos 884 	Xid = 456
+COMMIT/*!*/;
+DELIMITER ;
+# End of log file
+ROLLBACK /* added by mysqlbinlog */;
+/*!50003 SET COMPLETION_TYPE=@OLD_COMPLETION_TYPE*/;
+/*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=0*/;

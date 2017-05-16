@@ -1,0 +1,45 @@
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "(unknown)",
+        "BinlogMessageTime": "2017-05-16T03:44:29Z",
+        "BinlogPosition": 627,
+        "XId": 0
+    },
+    "Type": "Query",
+    "Query": "CREATE TABLE `departments` (\n  `dept_no` char(4) NOT NULL,\n  `dept_name` varchar(40) NOT NULL,\n  PRIMARY KEY (`dept_no`),\n  UNIQUE KEY `dept_name` (`dept_name`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+}
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "departments",
+        "BinlogMessageTime": "2017-05-16T03:45:19Z",
+        "BinlogPosition": 761,
+        "XId": 456
+    },
+    "Type": "Insert",
+    "Data": {
+        "Row": {
+            "dept_name": "DEF",
+            "dept_no": "ABC"
+        },
+        "MappingNotice": ""
+    }
+}
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "departments",
+        "BinlogMessageTime": "2017-05-16T03:45:29Z",
+        "BinlogPosition": 857,
+        "XId": 456
+    },
+    "Type": "Insert",
+    "Data": {
+        "Row": {
+            "dept_name": "XYZ",
+            "dept_no": "RST"
+        },
+        "MappingNotice": ""
+    }
+}

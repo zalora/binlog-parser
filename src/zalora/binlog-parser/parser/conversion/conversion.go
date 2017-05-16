@@ -54,21 +54,24 @@ func ConvertRowsEventsToMessages(xId uint64, rowsEventsData []RowsEventData) []m
 		)
 
 		switch d.BinlogEventHeader.EventType {
-		case replication.WRITE_ROWS_EVENTv2:
+		case replication.WRITE_ROWS_EVENTv1,
+			replication.WRITE_ROWS_EVENTv2:
 			for _, message := range createInsertMessagesFromRowData(header, rowData) {
 				ret = append(ret, messages.Message(message))
 			}
 
 			break
 
-		case replication.UPDATE_ROWS_EVENTv2:
+		case replication.UPDATE_ROWS_EVENTv1,
+			replication.UPDATE_ROWS_EVENTv2:
 			for _, message := range createUpdateMessagesFromRowData(header, rowData) {
 				ret = append(ret, messages.Message(message))
 			}
 
 			break
 
-		case replication.DELETE_ROWS_EVENTv2:
+		case replication.DELETE_ROWS_EVENTv1,
+			replication.DELETE_ROWS_EVENTv2:
 			for _, message := range createDeleteMessagesFromRowData(header, rowData) {
 				ret = append(ret, messages.Message(message))
 			}

@@ -48,6 +48,7 @@ func TestParseBinlogFile(t *testing.T) {
 		{"fixtures/mysql-bin.04", "fixtures/04.json", nil, nil},                                  // large insert (1000)
 		{"fixtures/mysql-bin.05", "fixtures/05.json", nil, nil},                                  // DROP TABLE ... queries only
 		{"fixtures/mysql-bin.06", "fixtures/06.json", nil, nil},                                  // table schema doesn't match anymore
+		{"fixtures/mysql-bin.07", "fixtures/07.json", nil, nil},                                  // mariadb format, create table, insert two rows
 		{"fixtures/mysql-bin.01", "fixtures/01-include-table.json", []string{"buildings"}, nil},  // include tables
 		{"fixtures/mysql-bin.01", "fixtures/01-no-events.json", []string{"unknown_table"}, nil},  // only unknown table is included - no events parsed
 		{"fixtures/mysql-bin.01", "fixtures/01.json", nil, []string{"test_db"}},                  // inlcude schemas

@@ -34,83 +34,110 @@ func TestConvertRowsEventsToMessages(t *testing.T) {
 
 	tableMetadata := database.TableMetadata{"db_name", "table_name", map[int]string{0: "field_1", 1: "field_2"}}
 
-	t.Run("Insert message", func(t *testing.T) {
-		eventHeader := createEventHeader(logPos, replication.WRITE_ROWS_EVENTv2)
-		rowsEvent := createRowsEvent([]interface{}{"value_1", "value_2"}, []interface{}{"value_3", "value_4"})
-		rowsEventData := []RowsEventData{NewRowsEventData(eventHeader, rowsEvent, tableMetadata)}
+	testCasesWriteRowsEvents := []struct {
+		eventType replication.EventType
+	}{
+		{replication.WRITE_ROWS_EVENTv1},
+		{replication.WRITE_ROWS_EVENTv2},
+	}
 
-		convertedMessages := ConvertRowsEventsToMessages(xId, rowsEventData)
+	for _, tc := range testCasesWriteRowsEvents {
+		t.Run("Insert message", func(t *testing.T) {
+			eventHeader := createEventHeader(logPos, tc.eventType)
+			rowsEvent := createRowsEvent([]interface{}{"value_1", "value_2"}, []interface{}{"value_3", "value_4"})
+			rowsEventData := []RowsEventData{NewRowsEventData(eventHeader, rowsEvent, tableMetadata)}
 
-		if len(convertedMessages) != 2 {
-			t.Fatal("Expected 2 insert messages to be created")
-		}
+			convertedMessages := ConvertRowsEventsToMessages(xId, rowsEventData)
 
-		assertMessageHeader(t, convertedMessages[0], logPos, messages.MESSAGE_TYPE_INSERT)
-		assertMessageHeader(t, convertedMessages[1], logPos, messages.MESSAGE_TYPE_INSERT)
+			if len(convertedMessages) != 2 {
+				t.Fatal("Expected 2 insert messages to be created")
+			}
 
-		insertMessageOne := convertedMessages[0].(messages.InsertMessage)
+			assertMessageHeader(t, convertedMessages[0], logPos, messages.MESSAGE_TYPE_INSERT)
+			assertMessageHeader(t, convertedMessages[1], logPos, messages.MESSAGE_TYPE_INSERT)
 
-		if !reflect.DeepEqual(insertMessageOne.Data, messages.MessageRowData{Row: messages.MessageRow{"field_1": "value_1", "field_2": "value_2"}}) {
-			t.Fatal(fmt.Sprintf("Wrong data for insert message 1 - got %v", insertMessageOne.Data))
-		}
+			insertMessageOne := convertedMessages[0].(messages.InsertMessage)
 
-		insertMessageTwo := convertedMessages[1].(messages.InsertMessage)
+			if !reflect.DeepEqual(insertMessageOne.Data, messages.MessageRowData{Row: messages.MessageRow{"field_1": "value_1", "field_2": "value_2"}}) {
+				t.Fatal(fmt.Sprintf("Wrong data for insert message 1 - got %v", insertMessageOne.Data))
+			}
 
-		if !reflect.DeepEqual(insertMessageTwo.Data, messages.MessageRowData{Row: messages.MessageRow{"field_1": "value_3", "field_2": "value_4"}}) {
-			t.Fatal(fmt.Sprintf("Wrong data for insert message 2 - got %v", insertMessageTwo.Data))
-		}
-	})
+			insertMessageTwo := convertedMessages[1].(messages.InsertMessage)
 
-	t.Run("Delete message", func(t *testing.T) {
-		eventHeader := createEventHeader(logPos, replication.DELETE_ROWS_EVENTv2)
-		rowsEvent := createRowsEvent([]interface{}{"value_1", "value_2"}, []interface{}{"value_3", "value_4"})
-		rowsEventData := []RowsEventData{NewRowsEventData(eventHeader, rowsEvent, tableMetadata)}
+			if !reflect.DeepEqual(insertMessageTwo.Data, messages.MessageRowData{Row: messages.MessageRow{"field_1": "value_3", "field_2": "value_4"}}) {
+				t.Fatal(fmt.Sprintf("Wrong data for insert message 2 - got %v", insertMessageTwo.Data))
+			}
+		})
+	}
 
-		convertedMessages := ConvertRowsEventsToMessages(xId, rowsEventData)
+	testCasesDeleteRowsEvents := []struct {
+		eventType replication.EventType
+	}{
+		{replication.DELETE_ROWS_EVENTv1},
+		{replication.DELETE_ROWS_EVENTv2},
+	}
 
-		if len(convertedMessages) != 2 {
-			t.Fatal("Expected 2 delete messages to be created")
-		}
+	for _, tc := range testCasesDeleteRowsEvents {
+		t.Run("Delete message", func(t *testing.T) {
+			eventHeader := createEventHeader(logPos, tc.eventType)
+			rowsEvent := createRowsEvent([]interface{}{"value_1", "value_2"}, []interface{}{"value_3", "value_4"})
+			rowsEventData := []RowsEventData{NewRowsEventData(eventHeader, rowsEvent, tableMetadata)}
 
-		assertMessageHeader(t, convertedMessages[0], logPos, messages.MESSAGE_TYPE_DELETE)
-		assertMessageHeader(t, convertedMessages[1], logPos, messages.MESSAGE_TYPE_DELETE)
+			convertedMessages := ConvertRowsEventsToMessages(xId, rowsEventData)
 
-		deleteMessageOne := convertedMessages[0].(messages.DeleteMessage)
+			if len(convertedMessages) != 2 {
+				t.Fatal("Expected 2 delete messages to be created")
+			}
 
-		if !reflect.DeepEqual(deleteMessageOne.Data, messages.MessageRowData{Row: messages.MessageRow{"field_1": "value_1", "field_2": "value_2"}}) {
-			t.Fatal(fmt.Sprintf("Wrong data for delete message 1 - got %v", deleteMessageOne.Data))
-		}
+			assertMessageHeader(t, convertedMessages[0], logPos, messages.MESSAGE_TYPE_DELETE)
+			assertMessageHeader(t, convertedMessages[1], logPos, messages.MESSAGE_TYPE_DELETE)
 
-		deleteMessageTwo := convertedMessages[1].(messages.DeleteMessage)
+			deleteMessageOne := convertedMessages[0].(messages.DeleteMessage)
 
-		if !reflect.DeepEqual(deleteMessageTwo.Data, messages.MessageRowData{Row: messages.MessageRow{"field_1": "value_3", "field_2": "value_4"}}) {
-			t.Fatal(fmt.Sprintf("Wrong data for delete message 2 - got %v", deleteMessageTwo.Data))
-		}
-	})
+			if !reflect.DeepEqual(deleteMessageOne.Data, messages.MessageRowData{Row: messages.MessageRow{"field_1": "value_1", "field_2": "value_2"}}) {
+				t.Fatal(fmt.Sprintf("Wrong data for delete message 1 - got %v", deleteMessageOne.Data))
+			}
 
-	t.Run("Update message", func(t *testing.T) {
-		eventHeader := createEventHeader(logPos, replication.UPDATE_ROWS_EVENTv2)
-		rowsEvent := createRowsEvent([]interface{}{"value_1", "value_2"}, []interface{}{"value_3", "value_4"})
-		rowsEventData := []RowsEventData{NewRowsEventData(eventHeader, rowsEvent, tableMetadata)}
+			deleteMessageTwo := convertedMessages[1].(messages.DeleteMessage)
 
-		convertedMessages := ConvertRowsEventsToMessages(xId, rowsEventData)
+			if !reflect.DeepEqual(deleteMessageTwo.Data, messages.MessageRowData{Row: messages.MessageRow{"field_1": "value_3", "field_2": "value_4"}}) {
+				t.Fatal(fmt.Sprintf("Wrong data for delete message 2 - got %v", deleteMessageTwo.Data))
+			}
+		})
+	}
 
-		if len(convertedMessages) != 1 {
-			t.Fatal("Expected 1 update messages to be created")
-		}
+	testCasesUpdateRowsEvents := []struct {
+		eventType replication.EventType
+	}{
+		{replication.UPDATE_ROWS_EVENTv1},
+		{replication.UPDATE_ROWS_EVENTv2},
+	}
 
-		assertMessageHeader(t, convertedMessages[0], logPos, messages.MESSAGE_TYPE_UPDATE)
+	for _, tc := range testCasesUpdateRowsEvents {
+		t.Run("Update message", func(t *testing.T) {
+			eventHeader := createEventHeader(logPos, tc.eventType)
+			rowsEvent := createRowsEvent([]interface{}{"value_1", "value_2"}, []interface{}{"value_3", "value_4"})
+			rowsEventData := []RowsEventData{NewRowsEventData(eventHeader, rowsEvent, tableMetadata)}
 
-		updateMessage := convertedMessages[0].(messages.UpdateMessage)
+			convertedMessages := ConvertRowsEventsToMessages(xId, rowsEventData)
 
-		if !reflect.DeepEqual(updateMessage.OldData, messages.MessageRowData{Row: messages.MessageRow{"field_1": "value_1", "field_2": "value_2"}}) {
-			t.Fatal(fmt.Sprintf("Wrong data for update message old data - got %v", updateMessage.OldData))
-		}
+			if len(convertedMessages) != 1 {
+				t.Fatal("Expected 1 update messages to be created")
+			}
 
-		if !reflect.DeepEqual(updateMessage.NewData, messages.MessageRowData{Row: messages.MessageRow{"field_1": "value_3", "field_2": "value_4"}}) {
-			t.Fatal(fmt.Sprintf("Wrong data for update message new data - got %v", updateMessage.NewData))
-		}
-	})
+			assertMessageHeader(t, convertedMessages[0], logPos, messages.MESSAGE_TYPE_UPDATE)
+
+			updateMessage := convertedMessages[0].(messages.UpdateMessage)
+
+			if !reflect.DeepEqual(updateMessage.OldData, messages.MessageRowData{Row: messages.MessageRow{"field_1": "value_1", "field_2": "value_2"}}) {
+				t.Fatal(fmt.Sprintf("Wrong data for update message old data - got %v", updateMessage.OldData))
+			}
+
+			if !reflect.DeepEqual(updateMessage.NewData, messages.MessageRowData{Row: messages.MessageRow{"field_1": "value_3", "field_2": "value_4"}}) {
+				t.Fatal(fmt.Sprintf("Wrong data for update message new data - got %v", updateMessage.NewData))
+			}
+		})
+	}
 
 	t.Run("Unknown event type", func(t *testing.T) {
 		eventHeader := createEventHeader(logPos, replication.RAND_EVENT) // can be any unkown event actually

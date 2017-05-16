@@ -70,11 +70,12 @@ func ParseBinlogToMessages(binlogFilename string, tableMap database.TableMap, co
 
 			break
 
-		case replication.WRITE_ROWS_EVENTv2:
-			fallthrough
-		case replication.UPDATE_ROWS_EVENTv2:
-			fallthrough
-		case replication.DELETE_ROWS_EVENTv2:
+		case replication.WRITE_ROWS_EVENTv1,
+			replication.UPDATE_ROWS_EVENTv1,
+			replication.DELETE_ROWS_EVENTv1,
+			replication.WRITE_ROWS_EVENTv2,
+			replication.UPDATE_ROWS_EVENTv2,
+			replication.DELETE_ROWS_EVENTv2:
 			rowsEvent := e.Event.(*replication.RowsEvent)
 
 			tableId := uint64(rowsEvent.TableID)

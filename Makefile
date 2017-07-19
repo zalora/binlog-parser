@@ -15,7 +15,7 @@ unit-test:
 	$(info ************ UNIT TESTS ************)
 	env TZ="UTC" env DATA_DIR=$(CURDIR)/data $(GOCC) test -tags=unit -cover $(SRC_DIR)
 
-integration-test: all integration-test-setup
+integration-test: integration-test-setup
 	$(info ************ INTEGRATION TESTS ************)
 	env TZ="UTC" env DATA_DIR=$(CURDIR)/data $(GOCC) test -tags=integration -cover $(SRC_DIR)
 

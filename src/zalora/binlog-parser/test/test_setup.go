@@ -14,7 +14,3 @@ func Setup(m *testing.M) {
 
 	os.Exit(m.Run())
 }
-
-func GetDataDir() string {
-	return os.Getenv("DATA_DIR")
-}

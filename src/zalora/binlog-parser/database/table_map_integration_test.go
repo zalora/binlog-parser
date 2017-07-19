@@ -4,13 +4,13 @@ package database
 
 import (
 	"fmt"
+	"os"
 	"reflect"
 	"testing"
-	"zalora/binlog-parser/test"
 )
 
 func TestLookupTableMetadata(t *testing.T) {
-	db, _ := GetDatabaseInstance(test.TEST_DB_CONNECTION_STRING)
+	db, _ := GetDatabaseInstance(os.Getenv("TEST_DB_DSN"))
 	defer db.Close()
 
 	t.Run("Found", func(t *testing.T) {

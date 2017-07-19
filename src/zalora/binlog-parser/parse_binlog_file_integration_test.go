@@ -12,7 +12,6 @@ import (
 	"strings"
 	"testing"
 	"zalora/binlog-parser/parser"
-	"zalora/binlog-parser/test"
 )
 
 func TestParseBinlogFile(t *testing.T) {
@@ -29,7 +28,7 @@ func TestParseBinlogFile(t *testing.T) {
 		tmpfile, _ := ioutil.TempFile("", "test")
 		defer os.RemoveAll(tmpfile.Name())
 
-		err := parseBinlogFile("/not/there", test.TEST_DB_CONNECTION_STRING, createConsumerChain(tmpfile))
+		err := parseBinlogFile("/not/there", os.Getenv("TEST_DB_DSN"), createConsumerChain(tmpfile))
 
 		if err == nil {
 			t.Fatal("Expected error when parsing non-existing file")
@@ -70,7 +69,7 @@ func TestParseBinlogFile(t *testing.T) {
 				chain.IncludeSchemas(tc.includeSchemas...)
 			}
 
-			err := parseBinlogFile(binlogFilename, test.TEST_DB_CONNECTION_STRING, chain)
+			err := parseBinlogFile(binlogFilename, os.Getenv("TEST_DB_DSN"), chain)
 
 			if err != nil {
 				t.Fatal(fmt.Sprintf("Expected no error when successfully parsing file %s", err))

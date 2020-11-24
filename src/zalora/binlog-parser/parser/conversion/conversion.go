@@ -22,13 +22,14 @@ func NewRowsEventData(binlogEventHeader replication.EventHeader, binlogEvent rep
 	}
 }
 
-func ConvertQueryEventToMessage(binlogEventHeader replication.EventHeader, binlogEvent replication.QueryEvent) messages.Message {
+func ConvertQueryEventToMessage(gtid string, binlogEventHeader replication.EventHeader, binlogEvent replication.QueryEvent) messages.Message {
 	header := messages.NewMessageHeader(
 		string(binlogEvent.Schema),
 		"(unknown)",
 		time.Unix(int64(binlogEventHeader.Timestamp), 0),
 		binlogEventHeader.LogPos,
 		0,
+		gtid,
 	)
 
 	message := messages.NewQueryMessage(
@@ -39,7 +40,8 @@ func ConvertQueryEventToMessage(binlogEventHeader replication.EventHeader, binlo
 	return messages.Message(message)
 }
 
-func ConvertRowsEventsToMessages(xId uint64, rowsEventsData []RowsEventData) []messages.Message {
+
+func ConvertRowsEventsToMessages(gtid string, xId uint64, rowsEventsData []RowsEventData) []messages.Message {
 	var ret []messages.Message
 
 	for _, d := range rowsEventsData {
@@ -51,6 +53,7 @@ func ConvertRowsEventsToMessages(xId uint64, rowsEventsData []RowsEventData) []m
 			time.Unix(int64(d.BinlogEventHeader.Timestamp), 0),
 			d.BinlogEventHeader.LogPos,
 			xId,
+			gtid,
 		)
 
 		switch d.BinlogEventHeader.EventType {

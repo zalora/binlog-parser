@@ -49,7 +49,7 @@ func consumerChainFromArgs() parser.ConsumerChain {
 	chain := parser.NewConsumerChain()
 
 	chain.CollectAsJson(os.Stdout, *prettyPrintJsonFlag)
-	glog.V(1).Infof("Pretty print JSON %s", *prettyPrintJsonFlag)
+	glog.V(1).Infof("Pretty print JSON %v", *prettyPrintJsonFlag)
 
 	if *includeTablesFlag != "" {
 		includeTables := commaSeparatedListToArray(*includeTablesFlag)

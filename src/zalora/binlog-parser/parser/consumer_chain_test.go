@@ -12,12 +12,12 @@ import (
 
 func TestConsumerChain(t *testing.T) {
 	messageOne := messages.NewQueryMessage(
-		messages.NewMessageHeader("database_name", "table_name", time.Now(), 100, 100),
+		messages.NewMessageHeader("database_name", "table_name", time.Now(), 100, 100, "3e11fa47-71ca-11e1-9e33-c80aa9429562:23"),
 		messages.SqlQuery("SELECT * FROM table"),
 	)
 
 	messageTwo := messages.NewQueryMessage(
-		messages.NewMessageHeader("database_name", "table_name", time.Now(), 100, 100),
+		messages.NewMessageHeader("database_name", "table_name", time.Now(), 100, 100, "3e11fa47-71ca-11e1-9e33-c80aa9429562:23"),
 		messages.SqlQuery("SELECT * FROM table"),
 	)
 

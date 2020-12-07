@@ -4,7 +4,8 @@
         "Table": "buildings",
         "BinlogMessageTime": "2017-04-24T03:47:57Z",
         "BinlogPosition": 323,
-        "XId": 9
+        "XId": 9,
+        "GTID": ""
     },
     "Type": "Insert",
     "Data": {
@@ -22,7 +23,8 @@
         "Table": "buildings",
         "BinlogMessageTime": "2017-04-24T03:47:57Z",
         "BinlogPosition": 323,
-        "XId": 9
+        "XId": 9,
+        "GTID": ""
     },
     "Type": "Insert",
     "Data": {
@@ -40,7 +42,8 @@
         "Table": "buildings",
         "BinlogMessageTime": "2017-04-24T03:50:14Z",
         "BinlogPosition": 560,
-        "XId": 11
+        "XId": 11,
+        "GTID": ""
     },
     "Type": "Update",
     "OldData": {
@@ -66,7 +69,8 @@
         "Table": "buildings",
         "BinlogMessageTime": "2017-04-24T03:50:23Z",
         "BinlogPosition": 797,
-        "XId": 12
+        "XId": 12,
+        "GTID": ""
     },
     "Type": "Update",
     "OldData": {
@@ -92,7 +96,8 @@
         "Table": "buildings",
         "BinlogMessageTime": "2017-04-24T03:50:35Z",
         "BinlogPosition": 1130,
-        "XId": 13
+        "XId": 13,
+        "GTID": ""
     },
     "Type": "Update",
     "OldData": {
@@ -118,7 +123,8 @@
         "Table": "buildings",
         "BinlogMessageTime": "2017-04-24T03:50:35Z",
         "BinlogPosition": 1130,
-        "XId": 13
+        "XId": 13,
+        "GTID": ""
     },
     "Type": "Update",
     "OldData": {
@@ -144,7 +150,8 @@
         "Table": "buildings",
         "BinlogMessageTime": "2017-04-24T03:50:35Z",
         "BinlogPosition": 1130,
-        "XId": 13
+        "XId": 13,
+        "GTID": ""
     },
     "Type": "Update",
     "OldData": {

@@ -22,14 +22,14 @@ func NewRowsEventData(binlogEventHeader replication.EventHeader, binlogEvent rep
 	}
 }
 
-func ConvertQueryEventToMessage(gtid string, binlogEventHeader replication.EventHeader, binlogEvent replication.QueryEvent) messages.Message {
+func ConvertQueryEventToMessage(binlogEventHeader replication.EventHeader, binlogEvent replication.QueryEvent) messages.Message {
 	header := messages.NewMessageHeader(
 		string(binlogEvent.Schema),
 		"(unknown)",
 		time.Unix(int64(binlogEventHeader.Timestamp), 0),
 		binlogEventHeader.LogPos,
 		0,
-		gtid,
+		"",
 	)
 
 	message := messages.NewQueryMessage(

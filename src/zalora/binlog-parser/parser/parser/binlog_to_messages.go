@@ -30,7 +30,6 @@ type eventHandler struct {
 	rowRowsEventBuffer RowsEventBuffer
 	consumer           ConsumerFunc
 	tableMap           database.TableMap
-	gtid               string
 }
 
 func (h *eventHandler) onEvent(e *replication.BinlogEvent) error {
@@ -38,8 +37,16 @@ func (h *eventHandler) onEvent(e *replication.BinlogEvent) error {
 	case replication.GTID_EVENT:
 		gtidEvent := e.Event.(*replication.GTIDEvent)
 
-		uid, _ := uuid.FromBytes(gtidEvent.SID)
-		h.gtid = fmt.Sprintf("%s:%d", uid, gtidEvent.GNO)
+		uid, err := uuid.FromBytes(gtidEvent.SID)
+		if err != nil{
+			glog.Errorf("Failed to parse UUID in GTID (%s)", gtidEvent.SID)
+			return err
+		}
+
+		gtid := fmt.Sprintf("%s:%d", uid, gtidEvent.GNO)
+		h.rowRowsEventBuffer.SetGTID(gtid)
+
+		break
 
 	case replication.QUERY_EVENT:
 		queryEvent := e.Event.(*replication.QueryEvent)
@@ -52,7 +59,7 @@ func (h *eventHandler) onEvent(e *replication.BinlogEvent) error {
 		} else {
 			glog.V(3).Info("Query event")
 
-			err := h.consumer(conversion.ConvertQueryEventToMessage(h.gtid, *e.Header, *queryEvent))
+			err := h.consumer(conversion.ConvertQueryEventToMessage(*e.Header, *queryEvent))
 
 			if err != nil {
 				return err
@@ -67,7 +74,8 @@ func (h *eventHandler) onEvent(e *replication.BinlogEvent) error {
 
 		glog.V(3).Infof("Ending transaction xID %d", xId)
 
-		for _, message := range conversion.ConvertRowsEventsToMessages(h.gtid, xId, h.rowRowsEventBuffer.Drain()) {
+		events, gtid := h.rowRowsEventBuffer.Drain()
+		for _, message := range conversion.ConvertRowsEventsToMessages(gtid, xId, events) {
 			err := h.consumer(message)
 
 			if err != nil {

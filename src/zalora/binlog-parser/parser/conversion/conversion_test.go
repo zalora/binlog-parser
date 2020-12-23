@@ -31,6 +31,7 @@ func TestConvertQueryEventToMessage(t *testing.T) {
 func TestConvertRowsEventsToMessages(t *testing.T) {
 	logPos := uint32(100)
 	xId := uint64(200)
+	gtid := "3e11fa47-71ca-11e1-9e33-c80aa9429562:23"
 
 	tableMetadata := database.TableMetadata{"db_name", "table_name", map[int]string{0: "field_1", 1: "field_2"}}
 
@@ -47,7 +48,7 @@ func TestConvertRowsEventsToMessages(t *testing.T) {
 			rowsEvent := createRowsEvent([]interface{}{"value_1", "value_2"}, []interface{}{"value_3", "value_4"})
 			rowsEventData := []RowsEventData{NewRowsEventData(eventHeader, rowsEvent, tableMetadata)}
 
-			convertedMessages := ConvertRowsEventsToMessages(xId, rowsEventData)
+			convertedMessages := ConvertRowsEventsToMessages(gtid, xId, rowsEventData)
 
 			if len(convertedMessages) != 2 {
 				t.Fatal("Expected 2 insert messages to be created")
@@ -83,7 +84,7 @@ func TestConvertRowsEventsToMessages(t *testing.T) {
 			rowsEvent := createRowsEvent([]interface{}{"value_1", "value_2"}, []interface{}{"value_3", "value_4"})
 			rowsEventData := []RowsEventData{NewRowsEventData(eventHeader, rowsEvent, tableMetadata)}
 
-			convertedMessages := ConvertRowsEventsToMessages(xId, rowsEventData)
+			convertedMessages := ConvertRowsEventsToMessages(gtid, xId, rowsEventData)
 
 			if len(convertedMessages) != 2 {
 				t.Fatal("Expected 2 delete messages to be created")
@@ -119,7 +120,7 @@ func TestConvertRowsEventsToMessages(t *testing.T) {
 			rowsEvent := createRowsEvent([]interface{}{"value_1", "value_2"}, []interface{}{"value_3", "value_4"})
 			rowsEventData := []RowsEventData{NewRowsEventData(eventHeader, rowsEvent, tableMetadata)}
 
-			convertedMessages := ConvertRowsEventsToMessages(xId, rowsEventData)
+			convertedMessages := ConvertRowsEventsToMessages(gtid, xId, rowsEventData)
 
 			if len(convertedMessages) != 1 {
 				t.Fatal("Expected 1 update messages to be created")
@@ -144,7 +145,7 @@ func TestConvertRowsEventsToMessages(t *testing.T) {
 		rowsEvent := createRowsEvent()
 		rowsEventData := []RowsEventData{NewRowsEventData(eventHeader, rowsEvent, tableMetadata)}
 
-		convertedMessages := ConvertRowsEventsToMessages(xId, rowsEventData)
+		convertedMessages := ConvertRowsEventsToMessages(gtid, xId, rowsEventData)
 
 		if len(convertedMessages) != 0 {
 			t.Fatal("Expected no messages to be created from unknown event")

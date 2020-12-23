@@ -4,7 +4,8 @@
         "Table": "buildings",
         "BinlogMessageTime": "2017-04-13T06:34:30Z",
         "BinlogPosition": 397,
-        "XId": 9
+        "XId": 9,
+        "GTID": ""
     },
     "Type": "Insert",
     "Data": {
@@ -22,7 +23,8 @@
         "Table": "buildings",
         "BinlogMessageTime": "2017-04-13T06:34:30Z",
         "BinlogPosition": 397,
-        "XId": 9
+        "XId": 9,
+        "GTID": ""
     },
     "Type": "Insert",
     "Data": {
@@ -40,7 +42,8 @@
         "Table": "buildings",
         "BinlogMessageTime": "2017-04-13T06:35:36Z",
         "BinlogPosition": 1226,
-        "XId": 14
+        "XId": 14,
+        "GTID": ""
     },
     "Type": "Delete",
     "Data": {

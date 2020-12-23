@@ -19,15 +19,17 @@ type MessageHeader struct {
 	BinlogMessageTime string
 	BinlogPosition    uint32
 	XId               uint64
+	GTID string
 }
 
-func NewMessageHeader(schema string, table string, binlogMessageTime time.Time, binlogPosition uint32, xId uint64) MessageHeader {
+func NewMessageHeader(schema string, table string, binlogMessageTime time.Time, binlogPosition uint32, xId uint64, gtid string) MessageHeader {
 	return MessageHeader{
 		Schema:            schema,
 		Table:             table,
 		BinlogMessageTime: binlogMessageTime.UTC().Format(time.RFC3339),
 		BinlogPosition:    binlogPosition,
 		XId:               xId,
+		GTID: gtid,
 	}
 }
 

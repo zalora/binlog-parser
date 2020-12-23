@@ -52,6 +52,9 @@ func TestParseBinlogFile(t *testing.T) {
 		{"fixtures/mysql-bin.01", "fixtures/01-no-events.json", []string{"unknown_table"}, nil},  // only unknown table is included - no events parsed
 		{"fixtures/mysql-bin.01", "fixtures/01.json", nil, []string{"test_db"}},                  // inlcude schemas
 		{"fixtures/mysql-bin.01", "fixtures/01-no-events.json", nil, []string{"unknown_schema"}}, // only unknown schema is included - no events parsed
+		{"gtid-fixtures/mysql-bin.01", "gtid-fixtures/01.json", nil, nil},
+		{"gtid-fixtures/mysql-bin.01", "gtid-fixtures/01-include-tables.json", []string{"buildings","departments","filler","language","lookup","rooms"}, nil},
+
 	}
 
 	for _, tc := range testCases {

@@ -1,0 +1,206 @@
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "buildings",
+        "BinlogMessageTime": "2020-12-07T12:10:11Z",
+        "BinlogPosition": 4237,
+        "XId": 67,
+        "GTID": "10440e47-3885-11eb-ac5b-0242ac110002:19"
+    },
+    "Type": "Insert",
+    "Data": {
+        "Row": {
+            "address": "3950 North 1st Street CA 95134",
+            "building_name": "ACME Headquaters",
+            "building_no": 1
+        },
+        "MappingNotice": ""
+    }
+}
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "buildings",
+        "BinlogMessageTime": "2020-12-07T12:10:11Z",
+        "BinlogPosition": 4382,
+        "XId": 67,
+        "GTID": "10440e47-3885-11eb-ac5b-0242ac110002:19"
+    },
+    "Type": "Insert",
+    "Data": {
+        "Row": {
+            "address": "5000 North 1st Street CA 95134",
+            "building_name": "ACME Sales",
+            "building_no": 2
+        },
+        "MappingNotice": ""
+    }
+}
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "rooms",
+        "BinlogMessageTime": "2020-12-07T12:10:11Z",
+        "BinlogPosition": 4653,
+        "XId": 71,
+        "GTID": "10440e47-3885-11eb-ac5b-0242ac110002:20"
+    },
+    "Type": "Insert",
+    "Data": {
+        "Row": {
+            "building_no": 1,
+            "room_name": "Amazon",
+            "room_no": 1
+        },
+        "MappingNotice": ""
+    }
+}
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "rooms",
+        "BinlogMessageTime": "2020-12-07T12:10:11Z",
+        "BinlogPosition": 4762,
+        "XId": 71,
+        "GTID": "10440e47-3885-11eb-ac5b-0242ac110002:20"
+    },
+    "Type": "Insert",
+    "Data": {
+        "Row": {
+            "building_no": 1,
+            "room_name": "War Room",
+            "room_no": 2
+        },
+        "MappingNotice": ""
+    }
+}
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "rooms",
+        "BinlogMessageTime": "2020-12-07T12:10:11Z",
+        "BinlogPosition": 4876,
+        "XId": 71,
+        "GTID": "10440e47-3885-11eb-ac5b-0242ac110002:20"
+    },
+    "Type": "Insert",
+    "Data": {
+        "Row": {
+            "building_no": 1,
+            "room_name": "Office of CEO",
+            "room_no": 3
+        },
+        "MappingNotice": ""
+    }
+}
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "rooms",
+        "BinlogMessageTime": "2020-12-07T12:10:11Z",
+        "BinlogPosition": 4986,
+        "XId": 71,
+        "GTID": "10440e47-3885-11eb-ac5b-0242ac110002:20"
+    },
+    "Type": "Insert",
+    "Data": {
+        "Row": {
+            "building_no": 2,
+            "room_name": "Marketing",
+            "room_no": 4
+        },
+        "MappingNotice": ""
+    }
+}
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "rooms",
+        "BinlogMessageTime": "2020-12-07T12:10:11Z",
+        "BinlogPosition": 5095,
+        "XId": 71,
+        "GTID": "10440e47-3885-11eb-ac5b-0242ac110002:20"
+    },
+    "Type": "Insert",
+    "Data": {
+        "Row": {
+            "building_no": 2,
+            "room_name": "Showroom",
+            "room_no": 5
+        },
+        "MappingNotice": ""
+    }
+}
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "rooms",
+        "BinlogMessageTime": "2020-12-07T12:10:11Z",
+        "BinlogPosition": 5390,
+        "XId": 78,
+        "GTID": "10440e47-3885-11eb-ac5b-0242ac110002:21"
+    },
+    "Type": "Update",
+    "OldData": {
+        "Row": {
+            "building_no": 2,
+            "room_name": "Marketing",
+            "room_no": 4
+        },
+        "MappingNotice": ""
+    },
+    "NewData": {
+        "Row": {
+            "building_no": 2,
+            "room_name": "MARKETING",
+            "room_no": 4
+        },
+        "MappingNotice": ""
+    }
+}
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "rooms",
+        "BinlogMessageTime": "2020-12-07T12:10:11Z",
+        "BinlogPosition": 5519,
+        "XId": 78,
+        "GTID": "10440e47-3885-11eb-ac5b-0242ac110002:21"
+    },
+    "Type": "Update",
+    "OldData": {
+        "Row": {
+            "building_no": 2,
+            "room_name": "Showroom",
+            "room_no": 5
+        },
+        "MappingNotice": ""
+    },
+    "NewData": {
+        "Row": {
+            "building_no": 2,
+            "room_name": "SHOWROOM",
+            "room_no": 5
+        },
+        "MappingNotice": ""
+    }
+}
+{
+    "Header": {
+        "Schema": "test_db",
+        "Table": "buildings",
+        "BinlogMessageTime": "2020-12-07T12:10:11Z",
+        "BinlogPosition": 5836,
+        "XId": 82,
+        "GTID": "10440e47-3885-11eb-ac5b-0242ac110002:22"
+    },
+    "Type": "Delete",
+    "Data": {
+        "Row": {
+            "address": "3950 North 1st Street CA 95134",
+            "building_name": "ACME Headquaters",
+            "building_no": 1
+        },
+        "MappingNotice": ""
+    }
+}

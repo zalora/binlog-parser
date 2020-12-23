@@ -4,7 +4,8 @@
         "Table": "(unknown)",
         "BinlogMessageTime": "2017-04-24T05:44:21Z",
         "BinlogPosition": 220,
-        "XId": 0
+        "XId": 0,
+        "GTID": ""
     },
     "Type": "Query",
     "Query": "DELETE FROM `test_db`.`filler`"
@@ -15,7 +16,8 @@
         "Table": "(unknown)",
         "BinlogMessageTime": "2017-04-24T05:44:44Z",
         "BinlogPosition": 589,
-        "XId": 0
+        "XId": 0,
+        "GTID": ""
     },
     "Type": "Query",
     "Query": "CREATE TABLE `language` (\n  `language_id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,\n  `name` char(20) NOT NULL,\n  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  PRIMARY KEY (`language_id`)\n) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8"
@@ -26,7 +28,8 @@
         "Table": "language",
         "BinlogMessageTime": "2017-04-24T05:45:11Z",
         "BinlogPosition": 771,
-        "XId": 11
+        "XId": 11,
+        "GTID": ""
     },
     "Type": "Insert",
     "Data": {
@@ -44,7 +47,8 @@
         "Table": "(unknown)",
         "BinlogMessageTime": "2017-04-24T05:45:32Z",
         "BinlogPosition": 943,
-        "XId": 0
+        "XId": 0,
+        "GTID": ""
     },
     "Type": "Query",
     "Query": "alter table language add some_field varchar(255) default NULL"
@@ -55,7 +59,8 @@
         "Table": "language",
         "BinlogMessageTime": "2017-04-24T05:45:41Z",
         "BinlogPosition": 1140,
-        "XId": 13
+        "XId": 13,
+        "GTID": ""
     },
     "Type": "Insert",
     "Data": {

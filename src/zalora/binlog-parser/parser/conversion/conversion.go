@@ -34,6 +34,7 @@ func ConvertQueryEventToMessage(binlogEventHeader replication.EventHeader, binlo
 	message := messages.NewQueryMessage(
 		header,
 		messages.SqlQuery(binlogEvent.Query),
+		binlogEvent.SlaveProxyID,
 	)
 
 	return messages.Message(message)

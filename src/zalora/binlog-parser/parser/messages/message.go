@@ -60,11 +60,12 @@ type SqlQuery string
 
 type QueryMessage struct {
 	baseMessage
-	Query SqlQuery
+	Query    SqlQuery
+	ThreadId uint32
 }
 
-func NewQueryMessage(header MessageHeader, query SqlQuery) QueryMessage {
-	return QueryMessage{baseMessage: baseMessage{Header: header, Type: MESSAGE_TYPE_QUERY}, Query: query}
+func NewQueryMessage(header MessageHeader, query SqlQuery, threadId uint32) QueryMessage {
+	return QueryMessage{baseMessage: baseMessage{Header: header, Type: MESSAGE_TYPE_QUERY}, Query: query, ThreadId: threadId}
 }
 
 type UpdateMessage struct {
